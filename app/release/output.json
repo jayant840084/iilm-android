@@ -1,0 +1,18 @@
+[
+  {
+    "outputType": {
+      "type": "APK"
+    },
+    "apkInfo": {
+      "type": "MAIN",
+      "splits": [],
+      "versionCode": 12
+    },
+    "path": "app-release.apk",
+    "properties": {
+      "packageId": "in.ac.iilm.iilm",
+      "split": "",
+      "minSdkVersion": "14"
+    }
+  }
+]

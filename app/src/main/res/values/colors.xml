@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#6200EA</color>
+
+    <color name="loginBgColor">#F9F9F9</color>
+    <color name="bgColor">#F0F0F0</color>
+
+    <color name="touchBgColor">#e9e9e9</color>
+    <color name="splashColor">#f9f9f9</color>
+
+    <color name="buttonPressedColor">#d9d9d9</color>
+
+    <color name="allow">#4CAF50</color>
+    <color name="deny">#F44336</color>
+    <color name="waiting">#FFC107</color>
+    <color name="other">#263238</color>
+</resources>

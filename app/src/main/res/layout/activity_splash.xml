@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_splash"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:mContext="in.ac.iilm.iilm.SplashActivity">
+
+    <TextView
+        android:id="@+id/updateRequired"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        android:paddingBottom="36dp"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+</RelativeLayout>

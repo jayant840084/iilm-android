@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:mContext="in.ac.iilm.iilm.guardConsole.GuardActivity">
+
+    <FrameLayout
+        android:id="@+id/guard_activity_base_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Button
+                android:id="@+id/bt_guard_scan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:background="@drawable/button_background"
+                android:text="Scan" />
+
+            <TextView
+                android:id="@+id/tv_guard_check_failed"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@id/bt_guard_scan"
+                android:gravity="center"
+                android:text="Check Failed, Please try again..."
+                android:textSize="30sp"
+                android:visibility="gone" />
+
+            <FrameLayout
+                android:id="@+id/guard_pass_info_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@id/bt_guard_scan"
+                android:layout_alignParentTop="true" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/guard_progress_background"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#32000000"
+            android:visibility="gone">
+
+            <ProgressBar
+                android:id="@+id/guard_progress"
+                style="?android:attr/progressBarStyleLarge"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone" />
+        </LinearLayout>
+    </FrameLayout>
+
+</android.support.design.widget.CoordinatorLayout>
