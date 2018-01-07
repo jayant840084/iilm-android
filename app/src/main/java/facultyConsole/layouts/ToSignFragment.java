@@ -12,14 +12,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import net.APIClient;
-import net.APIInterface;
+import net.ApiClient;
+import net.ApiInterface;
 import net.models.OutPassModel;
 
 import java.util.List;
 
-import db.OutPassCRUDToSign;
-import db.OutPassDBHelper;
+import db.OutPassCrudToSign;
+import db.OutPassDbHelper;
 import facultyConsole.adapters.ToSignAdapter;
 import in.ac.iilm.iilm.R;
 import retrofit2.Call;
@@ -32,16 +32,16 @@ import utils.UserInformation;
  */
 public class ToSignFragment extends Fragment {
 
-    private static final APIInterface apiInterface = APIClient.getClient().create(APIInterface.class);
+    private static final ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
     private static final int limit = 100;
-    private static OutPassDBHelper dbHelper;
+    private static OutPassDbHelper dbHelper;
     private static Call<List<OutPassModel>> call;
     private static boolean lastCallFinished = true;
     private static int offset = 0;
     private RecyclerView recyclerView;
     private ToSignAdapter adapter;
     private SwipeRefreshLayout refreshLayout;
-    private OutPassCRUDToSign crud;
+    private OutPassCrudToSign crud;
 
 
     public ToSignFragment() {
@@ -51,8 +51,8 @@ public class ToSignFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        dbHelper = new OutPassDBHelper(getContext());
-        crud = new OutPassCRUDToSign(getContext(), dbHelper);
+        dbHelper = new OutPassDbHelper(getContext());
+        crud = new OutPassCrudToSign(getContext(), dbHelper);
     }
 
     @Override

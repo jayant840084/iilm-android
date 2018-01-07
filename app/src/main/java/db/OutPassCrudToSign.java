@@ -17,12 +17,12 @@ import utils.UserInformation;
  * Created by jayan on 29-03-2017.
  */
 
-public class OutPassCRUDToSign {
+public class OutPassCrudToSign {
 
-    private OutPassDBHelper helper;
+    private OutPassDbHelper helper;
     private Context context;
 
-    public OutPassCRUDToSign(Context context, OutPassDBHelper helper) {
+    public OutPassCrudToSign(Context context, OutPassDbHelper helper) {
         this.context = context;
         this.helper = helper;
     }
@@ -35,8 +35,8 @@ public class OutPassCRUDToSign {
 
                 SQLiteDatabase database = helper.getWritableDatabase();
                 final List<String> outpassIDs = getIdList();
-                final List<String> outpassIDsSigned = new OutPassCRUDSigned(context,
-                        new OutPassDBHelper(context)).getIdList();
+                final List<String> outpassIDsSigned = new OutPassCrudSigned(context,
+                        new OutPassDbHelper(context)).getIdList();
                 database.beginTransaction();
 
                 String selection;

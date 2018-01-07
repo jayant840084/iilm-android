@@ -22,7 +22,7 @@ import retrofit2.http.Query;
  * Created by jayan on 16-11-2016.
  */
 
-public interface APIInterface {
+public interface ApiInterface {
 
     @GET("auth/login")
     Call<LoginModel> getLogin(
@@ -54,6 +54,13 @@ public interface APIInterface {
     Call<List<OutPassModel>> getOutPassesUnsigned(
             @Header("token") String token,
             @Query("onlyUnsigned") boolean unsigned,
+            @Query("offset") int offset,
+            @Query("limit") int limit
+    );
+
+    @GET("report/leaving-today")
+    Call<List<OutPassModel>> getStudentsLeavingToday(
+            @Header("token") String token,
             @Query("offset") int offset,
             @Query("limit") int limit
     );

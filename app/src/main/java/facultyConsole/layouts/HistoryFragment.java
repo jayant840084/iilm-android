@@ -3,7 +3,6 @@ package facultyConsole.layouts;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,20 +12,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import net.APIClient;
-import net.APIInterface;
-import net.models.OutPassModel;
 import net.requests.GetSignedPassesRequest;
 
-import java.util.List;
-
-import db.OutPassCRUDSigned;
-import db.OutPassDBHelper;
+import db.OutPassCrudSigned;
+import db.OutPassDbHelper;
 import facultyConsole.adapters.HistoryAdapter;
 import in.ac.iilm.iilm.R;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import utils.UserInformation;
 
 /**
@@ -39,8 +30,8 @@ public class HistoryFragment extends Fragment {
     private static int offset = 0;
     private HistoryAdapter adapter;
     private SwipeRefreshLayout refreshLayout;
-    private OutPassCRUDSigned crud;
-    private OutPassDBHelper dbHelper;
+    private OutPassCrudSigned crud;
+    private OutPassDbHelper dbHelper;
     private GetSignedPassesRequest request;
 
     public HistoryFragment() {
@@ -51,8 +42,8 @@ public class HistoryFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         request = new GetSignedPassesRequest();
-        dbHelper = new OutPassDBHelper(getContext());
-        crud = new OutPassCRUDSigned(getContext(), dbHelper);
+        dbHelper = new OutPassDbHelper(getContext());
+        crud = new OutPassCrudSigned(getContext(), dbHelper);
     }
 
     @Override

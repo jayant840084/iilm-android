@@ -3,8 +3,8 @@ package net.requests;
 import android.content.Context;
 import android.support.annotation.Nullable;
 
-import net.APIClient;
-import net.APIInterface;
+import net.ApiClient;
+import net.ApiInterface;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,7 +27,7 @@ public class ChangePasswordRequest {
                         final String oldPassword,
                         final String newPassword,
                         final ChangePasswordRequest.callback callback) {
-        APIInterface apiInterface = APIClient.getClient().create(APIInterface.class);
+        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
 
         final String token = UserInformation.getString(context, UserInformation.StringKey.TOKEN);
         Call<ResponseBody> call = apiInterface.putChangePassword(

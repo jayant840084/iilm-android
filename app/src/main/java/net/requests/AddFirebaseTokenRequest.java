@@ -4,8 +4,8 @@ import android.content.Context;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 
-import net.APIClient;
-import net.APIInterface;
+import net.ApiClient;
+import net.ApiInterface;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -20,7 +20,7 @@ public class AddFirebaseTokenRequest {
 
     public void execute(final Context context) {
 
-        APIInterface apiInterface = APIClient.getClient().create(APIInterface.class);
+        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
 
         final String firebaseToken = FirebaseInstanceId.getInstance().getToken();
         final String token = UserInformation.getString(context, UserInformation.StringKey.TOKEN);
@@ -42,7 +42,7 @@ public class AddFirebaseTokenRequest {
     }
 
     public void execute(final Context context, final LogoutRequest.Callback callback) {
-        APIInterface apiInterface = APIClient.getClient().create(APIInterface.class);
+        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
 
         final String firebaseToken = FirebaseInstanceId.getInstance().getToken();
         final String token = UserInformation.getString(context, UserInformation.StringKey.TOKEN);

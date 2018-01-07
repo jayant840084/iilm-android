@@ -15,8 +15,8 @@ import android.widget.Toast;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 
-import net.APIClient;
-import net.APIInterface;
+import net.ApiClient;
+import net.ApiInterface;
 import net.models.LoginModel;
 import net.models.UserModel;
 import net.requests.AddFirebaseTokenRequest;
@@ -104,7 +104,7 @@ public class LoginActivity extends AppCompatActivity {
             // perform the user login attempt.
             mProgressBar.showProgress();
 
-            APIInterface apiInterface = APIClient.getClient().create(APIInterface.class);
+            ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
 
             Call<LoginModel> call = apiInterface.getLogin(uid, password);
             call.enqueue(new Callback<LoginModel>() {
@@ -134,7 +134,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void getUserInfo(final String token) {
-        APIInterface apiInterface = APIClient.getClient().create(APIInterface.class);
+        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
 
         Call<UserModel> call = apiInterface.getUser(token);
 

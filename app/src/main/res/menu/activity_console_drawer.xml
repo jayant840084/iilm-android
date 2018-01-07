@@ -12,6 +12,10 @@
             android:icon="@drawable/ic_history_black"
             android:title="@string/nav_console_history" />
         <item
+            android:id="@+id/nav_console_report"
+            android:icon="@drawable/ic_history_black"
+            android:title="@string/nav_console_report" />
+        <item
             android:id="@+id/nav_console_settings"
             android:icon="@drawable/ic_settings_black"
             android:title="@string/nav_settings" />

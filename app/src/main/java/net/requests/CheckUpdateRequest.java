@@ -3,8 +3,8 @@ package net.requests;
 import android.content.Context;
 import android.preference.PreferenceManager;
 
-import net.APIClient;
-import net.APIInterface;
+import net.ApiClient;
+import net.ApiInterface;
 
 import java.io.IOException;
 
@@ -22,7 +22,7 @@ public class CheckUpdateRequest {
 
     public void execute(final Context context) {
 
-        APIInterface apiInterface = APIClient.getClient().create(APIInterface.class);
+        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
 
         Call<ResponseBody> call = apiInterface.checkUpdate();
 

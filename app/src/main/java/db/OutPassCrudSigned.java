@@ -17,12 +17,12 @@ import utils.UserInformation;
  * Created by jayan on 29-03-2017.
  */
 
-public class OutPassCRUDSigned {
+public class OutPassCrudSigned {
 
-    private OutPassDBHelper helper;
+    private OutPassDbHelper helper;
     private Context context;
 
-    public OutPassCRUDSigned(Context context, OutPassDBHelper helper) {
+    public OutPassCrudSigned(Context context, OutPassDbHelper helper) {
         this.context = context;
         this.helper = helper;
     }

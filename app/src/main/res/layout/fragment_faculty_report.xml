@@ -1,0 +1,36 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="facultyConsole.layouts.ReportFragment">
+
+    <Spinner
+        android:id="@+id/report_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="16dp"
+        android:paddingLeft="6dp"
+        android:paddingStart="6dp"
+        android:paddingTop="16dp"
+        android:spinnerMode="dialog"
+        android:textSize="16sp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@drawable/separator_background" />
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/srl_report"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_report"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:mContext="studentConsole.layouts.HistoryFragment" />
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+</LinearLayout>

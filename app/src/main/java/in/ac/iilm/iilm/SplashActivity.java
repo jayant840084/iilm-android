@@ -16,7 +16,7 @@ import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
 import com.crashlytics.android.ndk.CrashlyticsNdk;
 
-import net.APIClient;
+import net.ApiClient;
 import net.requests.CheckUpdateRequest;
 import net.requests.LogoutRequest;
 
@@ -36,7 +36,7 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Fabric.with(this, new Crashlytics(), new CrashlyticsNdk());
-        APIClient.with(this);
+        ApiClient.with(this);
         setContentView(R.layout.activity_splash);
 
         // if all permissions are not available this boolean will stop the SplashActivity from ending

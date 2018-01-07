@@ -12,8 +12,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import net.APIClient;
-import net.APIInterface;
+import net.ApiClient;
+import net.ApiInterface;
 import net.MyPicasso;
 import net.UrlGenerator;
 
@@ -116,7 +116,7 @@ public class PassResponseActivity extends AppCompatActivity {
 
             mProgressBar.showProgress();
 
-            APIInterface apiInterface = APIClient.getClient().create(APIInterface.class);
+            ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
 
             Call<ResponseBody> call = apiInterface.putSignOutPass(
                     UserInformation.getString(getBaseContext(), UserInformation.StringKey.TOKEN),
@@ -144,7 +144,7 @@ public class PassResponseActivity extends AppCompatActivity {
 
         final Button allow = findViewById(R.id.bt_allow);
         allow.setOnClickListener(view -> {
-            APIInterface apiInterface = APIClient.getClient().create(APIInterface.class);
+            ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
 
             Call<ResponseBody> call = apiInterface.putSignOutPass(
                     UserInformation.getString(getBaseContext(), UserInformation.StringKey.TOKEN),

@@ -18,6 +18,7 @@ import net.MyPicasso;
 import net.UrlGenerator;
 
 import facultyConsole.layouts.HistoryFragment;
+import facultyConsole.layouts.ReportFragment;
 import facultyConsole.layouts.SettingsFragment;
 import facultyConsole.layouts.ToSignFragment;
 import in.ac.iilm.iilm.R;
@@ -107,6 +108,12 @@ public class FacultyConsoleActivity extends AppCompatActivity
                         .replace(R.id.fragmentConsoleContainer, new HistoryFragment())
                         .commit();
                 toolbar.setTitle(R.string.nav_console_history);
+            } else if (id == R.id.nav_console_report) {
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragmentConsoleContainer, new ReportFragment())
+                        .commit();
+                toolbar.setTitle(R.string.nav_console_report);
             } else if (id == R.id.nav_console_settings) {
                 getSupportFragmentManager()
                         .beginTransaction()

@@ -3,8 +3,8 @@ package net.requests;
 import android.content.Context;
 import android.util.Log;
 
-import net.APIClient;
-import net.APIInterface;
+import net.ApiClient;
+import net.ApiInterface;
 import net.MyPicasso;
 import net.UrlGenerator;
 
@@ -30,7 +30,7 @@ public class LogoutRequest {
         the token from the server, if no token is present in user information simply reset user information
          */
         if (firebaseToken != null) {
-            APIInterface apiInterface = APIClient.getClient().create(APIInterface.class);
+            ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
             Call<ResponseBody> call = apiInterface.putLogout(
                     UserInformation.getString(context, UserInformation.StringKey.TOKEN),
                     firebaseToken

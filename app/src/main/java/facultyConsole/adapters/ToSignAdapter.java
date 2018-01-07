@@ -32,7 +32,9 @@ public class ToSignAdapter extends RecyclerView.Adapter<ToSignAdapter.ViewHolder
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.faculty_outpass_console_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.faculty_outpass_console_item,
+                parent,
+                false);
         return new ViewHolder(view);
     }
 

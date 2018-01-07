@@ -5,15 +5,14 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.widget.Toast;
 
-import net.APIClient;
-import net.APIInterface;
+import net.ApiClient;
+import net.ApiInterface;
 import net.models.LogReturnModel;
 
 import constants.OutPassAttributes;
 import constants.OutPassType;
 import retrofit2.Call;
 import retrofit2.Response;
-import utils.ToDateTime;
 import utils.UserInformation;
 
 /**
@@ -23,7 +22,7 @@ import utils.UserInformation;
 public class LogReturnRequest {
 
     public void execute(Context context, String id, final LogReturnRequest.Callback callback) {
-        APIInterface apiInterface = APIClient.getClient().create(APIInterface.class);
+        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
 
         final String token = UserInformation.getString(context, UserInformation.StringKey.TOKEN);
 

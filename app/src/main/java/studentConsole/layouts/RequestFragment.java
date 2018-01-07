@@ -15,8 +15,8 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import net.APIClient;
-import net.APIInterface;
+import net.ApiClient;
+import net.ApiInterface;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -214,7 +214,7 @@ public class RequestFragment extends Fragment implements AdapterView.OnItemSelec
 
                 mProgressBar.showProgress();
 
-                APIInterface apiInterface = APIClient.getClient().create(APIInterface.class);
+                ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
 
                 Call<ResponseBody> call = apiInterface.postRequestOutPass(
                         UserInformation.getString(getContext(), UserInformation.StringKey.TOKEN),

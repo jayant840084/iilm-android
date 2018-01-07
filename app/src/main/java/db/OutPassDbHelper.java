@@ -8,12 +8,12 @@ import android.database.sqlite.SQLiteOpenHelper;
  * Created by sherlock on 19/2/17.
  */
 
-public class OutPassDBHelper extends SQLiteOpenHelper {
+public class OutPassDbHelper extends SQLiteOpenHelper {
 
     private static final int DB_VERSION = 2;
     private static final String DB_NAME = "outpass.db";
 
-    public OutPassDBHelper(Context context) {
+    public OutPassDbHelper(Context context) {
         super(context, DB_NAME, null, DB_VERSION);
     }
 

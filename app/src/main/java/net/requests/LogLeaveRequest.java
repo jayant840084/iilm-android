@@ -3,18 +3,16 @@ package net.requests;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.widget.Toast;
 
-import net.APIClient;
-import net.APIInterface;
+import net.ApiClient;
+import net.ApiInterface;
 import net.models.LogLeaveModel;
 
 import constants.OutPassAttributes;
 import constants.OutPassType;
 import retrofit2.Call;
 import retrofit2.Response;
-import utils.ToDateTime;
 import utils.UserInformation;
 
 /**
@@ -24,7 +22,7 @@ import utils.UserInformation;
 public class LogLeaveRequest {
 
     public void execute(Context context, String id, final LogLeaveRequest.Callback callback) {
-        APIInterface apiInterface = APIClient.getClient().create(APIInterface.class);
+        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
 
         final String token = UserInformation.getString(context, UserInformation.StringKey.TOKEN);
 

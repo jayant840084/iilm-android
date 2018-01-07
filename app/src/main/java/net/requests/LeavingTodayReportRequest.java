@@ -1,7 +1,6 @@
 package net.requests;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
 
 import net.ApiClient;
 import net.ApiInterface;
@@ -10,14 +9,15 @@ import net.models.OutPassModel;
 import java.util.List;
 
 import retrofit2.Call;
+import retrofit2.Callback;
 import retrofit2.Response;
 import utils.UserInformation;
 
 /**
- * Created by sherlock on 9/7/17.
+ * Created by jayant on 6/1/18.
  */
 
-public class GetSignedPassesRequest {
+public class LeavingTodayReportRequest {
 
     private Call<List<OutPassModel>> call;
 
@@ -29,9 +29,8 @@ public class GetSignedPassesRequest {
     ) {
         final ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
 
-        call = apiInterface.getOutPassesSigned(
+        call = apiInterface.getStudentsLeavingToday(
                 UserInformation.getString(context, UserInformation.StringKey.TOKEN),
-                true,
                 offset,
                 limit
         );
@@ -44,10 +43,9 @@ public class GetSignedPassesRequest {
 
             @Override
             public void onFailure(Call<List<OutPassModel>> call, Throwable t) {
-                callback.onResponse(null);
+                callback.onFailure();
             }
         });
-
     }
 
     public void cancel() {
@@ -55,6 +53,7 @@ public class GetSignedPassesRequest {
     }
 
     public interface Callback {
-        void onResponse(@Nullable Response<List<OutPassModel>> response);
+        void onResponse(Response<List<OutPassModel>> response);
+        void onFailure();
     }
 }
