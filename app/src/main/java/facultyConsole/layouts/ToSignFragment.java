@@ -1,3 +1,7 @@
+/*
+ * Copyright 2018,  Jayant Singh, All rights reserved.
+ */
+
 package facultyConsole.layouts;
 
 
@@ -18,8 +22,8 @@ import net.models.OutPassModel;
 
 import java.util.List;
 
-import db.OutPassCrudToSign;
-import db.OutPassDbHelper;
+import db.CrudOutPassToSign;
+import db.DbHelper;
 import facultyConsole.adapters.ToSignAdapter;
 import in.ac.iilm.iilm.R;
 import retrofit2.Call;
@@ -34,14 +38,14 @@ public class ToSignFragment extends Fragment {
 
     private static final ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
     private static final int limit = 100;
-    private static OutPassDbHelper dbHelper;
+    private static DbHelper dbHelper;
     private static Call<List<OutPassModel>> call;
     private static boolean lastCallFinished = true;
     private static int offset = 0;
     private RecyclerView recyclerView;
     private ToSignAdapter adapter;
     private SwipeRefreshLayout refreshLayout;
-    private OutPassCrudToSign crud;
+    private CrudOutPassToSign crud;
 
 
     public ToSignFragment() {
@@ -51,8 +55,8 @@ public class ToSignFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        dbHelper = new OutPassDbHelper(getContext());
-        crud = new OutPassCrudToSign(getContext(), dbHelper);
+        dbHelper = new DbHelper(getContext());
+        crud = new CrudOutPassToSign(getContext(), dbHelper);
     }
 
     @Override
@@ -62,7 +66,7 @@ public class ToSignFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_faculty_to_sign, container, false);
 
         recyclerView = view.findViewById(R.id.rv_console);
-        adapter = new ToSignAdapter(crud.getOutpassesToSign());
+        adapter = new ToSignAdapter(crud.getOutPassesToSign());
 
         recyclerView.setAdapter(adapter);
 
@@ -125,7 +129,7 @@ public class ToSignFragment extends Fragment {
                             }
                         });
                     } else {
-                        crud.addOrUpdateOutapss(response.body(), outpasses -> {
+                        crud.addOrUpdateOutPass(response.body(), outpasses -> {
                             Activity activity = getActivity();
                             if (activity != null) {
                                 getActivity().runOnUiThread(() -> {

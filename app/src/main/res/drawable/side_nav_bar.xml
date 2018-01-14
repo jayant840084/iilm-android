@@ -1,3 +1,7 @@
+<!--
+  ~ Copyright 2018,  Jayant Singh, All rights reserved.
+  -->
+
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
     <gradient

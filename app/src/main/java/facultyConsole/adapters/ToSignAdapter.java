@@ -1,3 +1,7 @@
+/*
+ * Copyright 2018,  Jayant Singh, All rights reserved.
+ */
+
 package facultyConsole.adapters;
 
 import android.content.Intent;
@@ -18,7 +22,7 @@ import utils.ToDateTime;
 
 /**
  * Created by Jayant Singh on 17-11-2016.
- *
+ * <p>
  * Adapter for ToSignFragment RecyclerView
  */
 

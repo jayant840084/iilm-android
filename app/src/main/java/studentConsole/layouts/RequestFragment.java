@@ -1,3 +1,7 @@
+/*
+ * Copyright 2018,  Jayant Singh, All rights reserved.
+ */
+
 package studentConsole.layouts;
 
 import android.app.DatePickerDialog;
@@ -319,7 +323,7 @@ public class RequestFragment extends Fragment implements AdapterView.OnItemSelec
     }
 
     private boolean isDayOutPass() {
-        return mSpinner.getSelectedItem().toString().equals(OutPassType.DAY);
+        return mSpinner.getSelectedItem().toString().equals(OutPassType.DAY_NOT_COLLEGE_HOURS);
     }
 
     private boolean isReturnDateBeforeLeaveDate() {

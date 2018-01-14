@@ -1,3 +1,7 @@
+<!--
+  ~ Copyright 2018,  Jayant Singh, All rights reserved.
+  -->
+
 <android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/srl_history"

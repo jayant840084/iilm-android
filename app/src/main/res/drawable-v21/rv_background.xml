@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright 2018,  Jayant Singh, All rights reserved.
+  -->
+
 <ripple xmlns:android="http://schemas.android.com/apk/res/android"
     android:color="@color/touchBgColor">
     <item android:id="@+id/mask">

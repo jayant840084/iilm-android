@@ -1,3 +1,7 @@
+/*
+ * Copyright 2018,  Jayant Singh, All rights reserved.
+ */
+
 package guardConsole;
 
 import android.content.Intent;
@@ -159,7 +163,7 @@ public class GuardConsoleActivity extends AppCompatActivity {
 
     private void allowLeaveExit(Bundle passData) {
 
-        if (passData.getString(OutPassAttributes.OUT_PASS_TYPE).equals(OutPassType.DAY))
+        if (passData.getString(OutPassAttributes.OUT_PASS_TYPE).equals(OutPassType.DAY_NOT_COLLEGE_HOURS))
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.guard_pass_info_container, DayPassFragment.newInstance(passData))
                     .commit();
@@ -186,7 +190,7 @@ public class GuardConsoleActivity extends AppCompatActivity {
 
     private void allowReturnEntry(Bundle passData) {
 
-        if (passData.getString(OutPassAttributes.OUT_PASS_TYPE).equals(OutPassType.DAY))
+        if (passData.getString(OutPassAttributes.OUT_PASS_TYPE).equals(OutPassType.DAY_NOT_COLLEGE_HOURS))
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.guard_pass_info_container, DayPassFragment.newInstance(passData))
                     .commit();

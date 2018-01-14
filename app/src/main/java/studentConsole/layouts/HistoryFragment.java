@@ -1,3 +1,7 @@
+/*
+ * Copyright 2018,  Jayant Singh, All rights reserved.
+ */
+
 package studentConsole.layouts;
 
 import android.app.Activity;
@@ -17,8 +21,8 @@ import net.models.OutPassModel;
 
 import java.util.List;
 
-import db.OutPassCrud;
-import db.OutPassDbHelper;
+import db.CrudOutPass;
+import db.DbHelper;
 import in.ac.iilm.iilm.R;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -36,8 +40,8 @@ public class HistoryFragment extends Fragment {
     private static int offset = 0;
     private HistoryAdapter adapter;
     private SwipeRefreshLayout refreshLayout;
-    private OutPassCrud crud;
-    private OutPassDbHelper dbHelper;
+    private CrudOutPass crud;
+    private DbHelper dbHelper;
 
     public HistoryFragment() {
         // Required empty public constructor
@@ -46,8 +50,8 @@ public class HistoryFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        dbHelper = new OutPassDbHelper(getContext());
-        crud = new OutPassCrud(getContext(), dbHelper);
+        dbHelper = new DbHelper(getContext());
+        crud = new CrudOutPass(getContext(), dbHelper);
     }
 
     @Override
@@ -56,7 +60,7 @@ public class HistoryFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_student_history, container, false);
 
         RecyclerView recyclerView = view.findViewById(R.id.rv_history);
-        adapter = new HistoryAdapter(crud.getOutpasses());
+        adapter = new HistoryAdapter(crud.getOutPasses());
         recyclerView.setAdapter(adapter);
 
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
@@ -67,17 +71,17 @@ public class HistoryFragment extends Fragment {
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 if (linearLayoutManager.findLastCompletelyVisibleItemPosition() == adapter.getItemCount() - 1)
-                    getOutpasses(false);
+                    getOutPasses(false);
             }
         });
 
         refreshLayout = view.findViewById(R.id.srl_history);
-        refreshLayout.setOnRefreshListener(() -> getOutpasses(true));
-        getOutpasses(true);
+        refreshLayout.setOnRefreshListener(() -> getOutPasses(true));
+        getOutPasses(true);
         return view;
     }
 
-    private void getOutpasses(boolean refresh) {
+    private void getOutPasses(boolean refresh) {
         if (!refreshLayout.isRefreshing()) {
             refreshLayout.setRefreshing(true);
         }
@@ -100,22 +104,22 @@ public class HistoryFragment extends Fragment {
                 public void onResponse(Call<List<OutPassModel>> call,
                                        Response<List<OutPassModel>> response) {
                     if (offset == 0) {
-                        crud.deleteAllAndAdd(response.body(), outpasses -> {
+                        crud.deleteAllAndAdd(response.body(), outPasses -> {
                             Activity activity = getActivity();
                             if (activity != null) {
                                 activity.runOnUiThread(() -> {
-                                    adapter.updateDataSet(outpasses);
+                                    adapter.updateDataSet(outPasses);
                                     refreshLayout.setRefreshing(false);
                                     lastCallFinished = true;
                                 });
                             }
                         });
                     } else {
-                        crud.addOrUpdateOutapss(response.body(), outpasses -> {
+                        crud.addOrUpdateOutPass(response.body(), outPasses -> {
                             Activity activity = getActivity();
                             if (activity != null) {
                                 getActivity().runOnUiThread(() -> {
-                                    adapter.updateDataSet(outpasses);
+                                    adapter.updateDataSet(outPasses);
                                     refreshLayout.setRefreshing(false);
                                     lastCallFinished = true;
                                 });
@@ -151,7 +155,7 @@ public class HistoryFragment extends Fragment {
 
     @Override
     public void onResume() {
-        getOutpasses(false);
+        getOutPasses(false);
         super.onResume();
     }
 }

@@ -1,3 +1,7 @@
+/*
+ * Copyright 2018,  Jayant Singh, All rights reserved.
+ */
+
 package facultyConsole.adapters;
 
 import android.support.v7.widget.RecyclerView;
@@ -47,7 +51,7 @@ public class ReportAdapter extends RecyclerView.Adapter<ReportAdapter.ViewHolder
         return mData.size();
     }
 
-    public void updateDatasetChanged(List<OutPassModel> data) {
+    public void updateData(List<OutPassModel> data) {
         this.mData.clear();
         this.mData.addAll(data);
         this.notifyDataSetChanged();

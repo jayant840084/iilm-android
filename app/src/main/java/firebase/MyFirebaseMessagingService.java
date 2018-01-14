@@ -1,16 +1,17 @@
+/*
+ * Copyright 2018,  Jayant Singh, All rights reserved.
+ */
+
 package firebase;
 
 import android.app.Notification;
-import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
 import android.support.v4.app.TaskStackBuilder;
-import android.util.Log;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -26,10 +27,9 @@ import utils.UserInformation;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
-    private static int notificationID = 0;
-
     private static final Uri notificationSound = RingtoneManager
             .getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+    private static int notificationID = 0;
 
     @Override
     public void onMessageReceived(final RemoteMessage remoteMessage) {

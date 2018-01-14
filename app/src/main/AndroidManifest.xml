@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright 2018,  Jayant Singh, All rights reserved.
+  -->
+
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="in.ac.iilm.iilm">
 
@@ -16,6 +20,7 @@
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="3b7adae13bf277e8a294430837469d44119bda57" />
+
         <activity
             android:name=".SplashActivity"
             android:screenOrientation="portrait"
@@ -55,21 +60,25 @@
         <activity
             android:name="studentConsole.NightPassViewActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".ImageViewActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name="auth.ChangePasswordActivity"
-            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ImageViewActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="auth.ChangePasswordActivity"
+            android:screenOrientation="portrait" />
 
-        <service android:name="firebase.MyFirebaseMessagingService"
+        <service
+            android:name="firebase.MyFirebaseMessagingService"
             android:exported="false">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-        <service android:name="firebase.MyFirebaseInstanceIDService"
+        <service
+            android:name="firebase.MyFirebaseInstanceIDService"
             android:exported="false">
             <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
     </application>

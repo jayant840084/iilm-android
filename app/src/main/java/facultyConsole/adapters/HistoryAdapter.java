@@ -1,3 +1,7 @@
+/*
+ * Copyright 2018,  Jayant Singh, All rights reserved.
+ */
+
 package facultyConsole.adapters;
 
 import android.content.Context;
@@ -21,7 +25,7 @@ import utils.ToDateTime;
 
 /**
  * Created by Jayant Singh on 19-11-2016.
- *
+ * <p>
  * Adapter for HistoryFragment RecyclerView
  */
 
@@ -62,7 +66,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
                     setMessage(mOutPassList.get(position).getWardenSigned(), holder);
                     break;
             }
-        } catch (NullPointerException ignore) {}
+        } catch (NullPointerException ignore) {
+        }
         holder.outPassResponseData = mOutPassList.get(position);
     }
 

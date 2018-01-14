@@ -1,3 +1,7 @@
+/*
+ * Copyright 2018,  Jayant Singh, All rights reserved.
+ */
+
 package net.models;
 
 import com.google.gson.annotations.SerializedName;

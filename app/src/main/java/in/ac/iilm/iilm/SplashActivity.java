@@ -1,3 +1,7 @@
+/*
+ * Copyright 2018,  Jayant Singh, All rights reserved.
+ */
+
 package in.ac.iilm.iilm;
 
 import android.Manifest;
@@ -92,7 +96,7 @@ public class SplashActivity extends AppCompatActivity {
                 if (grantResults.length <= 0
                         || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
 
-                        }
+                }
         }
         continueSplash();
     }

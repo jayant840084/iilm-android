@@ -1,3 +1,7 @@
+/*
+ * Copyright 2018,  Jayant Singh, All rights reserved.
+ */
+
 package guardConsole.layouts;
 
 
@@ -101,7 +105,7 @@ public class NightPassFragment extends Fragment {
         return view;
     }
 
-    private void setStatus(final TextView textView,@Nullable final String status) {
+    private void setStatus(final TextView textView, @Nullable final String status) {
         if (status != null) {
             if (Boolean.parseBoolean(status)) {
                 textView.setText(getString(R.string.allowed));

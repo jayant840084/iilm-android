@@ -1,4 +1,10 @@
+/*
+ * Copyright 2018,  Jayant Singh, All rights reserved.
+ */
+
 package net.models;
+
+import android.util.Log;
 
 import com.google.gson.annotations.SerializedName;
 

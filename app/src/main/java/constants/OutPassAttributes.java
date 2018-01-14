@@ -1,7 +1,11 @@
+/*
+ * Copyright 2018,  Jayant Singh, All rights reserved.
+ */
+
 package constants;
 
 /**
- * Created by sherlock on 29/8/17.
+ * Created by Jayant Singh on 29/8/17.
  */
 
 public class OutPassAttributes {

@@ -1,7 +1,11 @@
+/*
+ * Copyright 2018,  Jayant Singh, All rights reserved.
+ */
+
 package constants;
 
 /**
- * Created by jayant on 13/11/17.
+ * Created by Jayant Singh on 13/11/17.
  */
 
 public class UserAttributes {

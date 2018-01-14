@@ -1,8 +1,13 @@
+/*
+ * Copyright 2018,  Jayant Singh, All rights reserved.
+ */
+
 package studentConsole.adapters;
 
 import android.content.Intent;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,7 +51,8 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         holder.time.setText(dateTimeLeave.getTime());
         holder.address.setText(outPassList.get(position).getVisitingAddress());
 
-        if (outPassList.get(position).getOutPassType().equals(OutPassType.DAY)) {
+        Log.d("TYPEEEEEEE", outPassList.get(position).getOutPassType());
+        if (outPassList.get(position).getOutPassType().equals(OutPassType.DAY_NOT_COLLEGE_HOURS)) {
             try {
                 if (outPassList.get(position).getWardenSigned()) {
                     holder.allowed.setText("ALLOWED");
@@ -113,7 +119,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
             stateIndicator = itemView.findViewById(R.id.ll_state_indicator);
             itemView.setOnClickListener(view -> {
                 Intent intent;
-                if (outPassResponseData.getOutPassType().equals(OutPassType.DAY)) {
+                if (outPassResponseData.getOutPassType().equals(OutPassType.DAY_NOT_COLLEGE_HOURS)) {
                     intent = new Intent(itemView.getContext(), DayPassViewActivity.class);
                 } else {
                     intent = new Intent(itemView.getContext(), NightPassViewActivity.class);

@@ -1,3 +1,7 @@
+/*
+ * Copyright 2018,  Jayant Singh, All rights reserved.
+ */
+
 package net.requests;
 
 import android.content.Context;
@@ -10,6 +14,14 @@ import net.UrlGenerator;
 
 import java.io.IOException;
 
+import db.CrudLeavingToday;
+import db.CrudLeftToday;
+import db.CrudOutPass;
+import db.CrudOutPassSigned;
+import db.CrudOutPassToSign;
+import db.CrudReturnedToday;
+import db.CrudYetToReturn;
+import db.DbHelper;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Response;
@@ -73,6 +85,13 @@ public class LogoutRequest {
         UserInformation.putString(context, UserInformation.StringKey.ROOM_NUMBER, "");
         UserInformation.putString(context, UserInformation.StringKey.SCOPE, "");
         UserInformation.putString(context, UserInformation.StringKey.TOKEN, "");
+        new CrudLeavingToday(context, new DbHelper(context)).deleteOutPasses();
+        new CrudLeftToday(context, new DbHelper(context)).deleteOutPasses();
+        new CrudOutPass(context, new DbHelper(context)).deleteOutPasses();
+        new CrudOutPassSigned(context, new DbHelper(context)).deleteOutPasses();
+        new CrudOutPassToSign(context, new DbHelper(context)).deleteOutPasses();
+        new CrudReturnedToday(context, new DbHelper(context)).deleteOutPasses();
+        new CrudYetToReturn(context, new DbHelper(context)).deleteOutPasses();
         MyPicasso.with(context).invalidate(UrlGenerator.getUrl("profile-img"));
     }
 

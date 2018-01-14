@@ -1,3 +1,7 @@
+/*
+ * Copyright 2018,  Jayant Singh, All rights reserved.
+ */
+
 package facultyConsole.layouts;
 
 
@@ -12,10 +16,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import net.models.OutPassModel;
 import net.requests.GetSignedPassesRequest;
 
-import db.OutPassCrudSigned;
-import db.OutPassDbHelper;
+import java.util.List;
+
+import db.CrudOutPassSigned;
+import db.DbHelper;
 import facultyConsole.adapters.HistoryAdapter;
 import in.ac.iilm.iilm.R;
 import utils.UserInformation;
@@ -30,8 +37,8 @@ public class HistoryFragment extends Fragment {
     private static int offset = 0;
     private HistoryAdapter adapter;
     private SwipeRefreshLayout refreshLayout;
-    private OutPassCrudSigned crud;
-    private OutPassDbHelper dbHelper;
+    private CrudOutPassSigned crud;
+    private DbHelper dbHelper;
     private GetSignedPassesRequest request;
 
     public HistoryFragment() {
@@ -42,8 +49,8 @@ public class HistoryFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         request = new GetSignedPassesRequest();
-        dbHelper = new OutPassDbHelper(getContext());
-        crud = new OutPassCrudSigned(getContext(), dbHelper);
+        dbHelper = new DbHelper(getContext());
+        crud = new CrudOutPassSigned(getContext(), dbHelper);
     }
 
     @Override
@@ -56,7 +63,7 @@ public class HistoryFragment extends Fragment {
         RecyclerView recyclerView = view.findViewById(R.id.rv_history);
         adapter = new HistoryAdapter(
                 getContext(),
-                crud.getOutpassesSigned(),
+                crud.getOutPassesSigned(),
                 UserInformation.getString(
                         getContext(),
                         UserInformation.StringKey.SCOPE));
@@ -102,30 +109,14 @@ public class HistoryFragment extends Fragment {
                     (response) -> {
                         if (response != null) {
                             if (offset == 0) {
-                                crud.deleteAllAndAdd(response.body(), outPasses -> {
-                                    Activity activity = getActivity();
-                                    if (activity != null) {
-                                        getActivity().runOnUiThread(() -> {
-                                            adapter.updateDataSet(outPasses);
-                                            refreshLayout.setRefreshing(false);
-                                            lastCallFinished = true;
-                                        });
-                                    }
-                                });
+                                crud.deleteAllAndAdd(response.body(), this::updateData);
                             } else {
-                                crud.addOrUpdateOutapss(response.body(), outPasses -> {
-                                    Activity activity = getActivity();
-                                    if (activity != null) {
-                                        getActivity().runOnUiThread(() -> {
-                                            adapter.updateDataSet(outPasses);
-                                            refreshLayout.setRefreshing(false);
-                                            lastCallFinished = true;
-                                        });
-                                    }
-                                });
+                                crud.addOrUpdateOutPass(response.body(), this::updateData);
                             }
                         } else {
-                            Toast.makeText(getContext(), "Failed to update", Toast.LENGTH_SHORT).show();
+                            if (getActivity() != null) {
+                                Toast.makeText(getContext(), "Failed to update", Toast.LENGTH_SHORT).show();
+                            }
                             lastCallFinished = true;
                         }
                     }
@@ -134,6 +125,17 @@ public class HistoryFragment extends Fragment {
             lastCallFinished = false;
 
 
+        }
+    }
+
+    private void updateData(List<OutPassModel> outPasses) {
+        Activity activity = getActivity();
+        if (activity != null) {
+            getActivity().runOnUiThread(() -> {
+                adapter.updateDataSet(outPasses);
+                refreshLayout.setRefreshing(false);
+                lastCallFinished = true;
+            });
         }
     }
 

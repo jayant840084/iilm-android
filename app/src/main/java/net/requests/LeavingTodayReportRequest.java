@@ -1,3 +1,7 @@
+/*
+ * Copyright 2018,  Jayant Singh, All rights reserved.
+ */
+
 package net.requests;
 
 import android.content.Context;
@@ -9,7 +13,6 @@ import net.models.OutPassModel;
 import java.util.List;
 
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
 import utils.UserInformation;
 
@@ -54,6 +57,7 @@ public class LeavingTodayReportRequest {
 
     public interface Callback {
         void onResponse(Response<List<OutPassModel>> response);
+
         void onFailure();
     }
 }

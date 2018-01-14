@@ -1,3 +1,7 @@
+/*
+ * Copyright 2018,  Jayant Singh, All rights reserved.
+ */
+
 package net;
 
 import net.models.LogLeaveModel;
@@ -60,6 +64,27 @@ public interface ApiInterface {
 
     @GET("report/leaving-today")
     Call<List<OutPassModel>> getStudentsLeavingToday(
+            @Header("token") String token,
+            @Query("offset") int offset,
+            @Query("limit") int limit
+    );
+
+    @GET("report/returned-today")
+    Call<List<OutPassModel>> getStudentsReturnedToday(
+            @Header("token") String token,
+            @Query("offset") int offset,
+            @Query("limit") int limit
+    );
+
+    @GET("report/left-today")
+    Call<List<OutPassModel>> getStudentsLeftToday(
+            @Header("token") String token,
+            @Query("offset") int offset,
+            @Query("limit") int limit
+    );
+
+    @GET("report/yet-to-return")
+    Call<List<OutPassModel>> getStudentsYetToReturn(
             @Header("token") String token,
             @Query("offset") int offset,
             @Query("limit") int limit
