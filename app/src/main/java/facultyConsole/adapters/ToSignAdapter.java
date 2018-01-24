@@ -4,21 +4,34 @@
 
 package facultyConsole.adapters;
 
+import android.content.Context;
 import android.content.Intent;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import net.models.OutPassModel;
 
 import java.util.List;
 
 import constants.OutPassAttributes;
-import facultyConsole.PassResponseActivity;
+import constants.OutPassSource;
+import constants.OutPassType;
+import constants.UserAttributes;
+import constants.UserRoles;
+import facultyConsole.DayPassResponseActivity;
+import facultyConsole.DayWorkingPassResponseActivity;
+import facultyConsole.NightPassResponseActivity;
 import in.ac.iilm.iilm.R;
+import studentConsole.DayCollegeHoursPassViewActivity;
+import studentConsole.DayPassViewActivity;
+import studentConsole.NightPassViewActivity;
 import utils.ToDateTime;
+import utils.UserInformation;
 
 /**
  * Created by Jayant Singh on 17-11-2016.
@@ -28,9 +41,11 @@ import utils.ToDateTime;
 
 public class ToSignAdapter extends RecyclerView.Adapter<ToSignAdapter.ViewHolder> {
 
+    private Context context;
     private List<OutPassModel> mData;
 
-    public ToSignAdapter(List<OutPassModel> data) {
+    public ToSignAdapter(Context context, List<OutPassModel> data) {
+        this.context = context;
         this.mData = data;
     }
 
@@ -52,7 +67,8 @@ public class ToSignAdapter extends RecyclerView.Adapter<ToSignAdapter.ViewHolder
         holder.year.setText(String.format("Branch: %s Year: %s",
                 mData.get(position).getBranch().toUpperCase(),
                 mData.get(position).getYear()));
-        holder.outPassResponseData = mData.get(position);
+        holder.outPass = mData.get(position);
+        holder.setBackgroundForPass();
     }
 
     @Override
@@ -72,7 +88,7 @@ public class ToSignAdapter extends RecyclerView.Adapter<ToSignAdapter.ViewHolder
         TextView date;
         TextView time;
         TextView year;
-        OutPassModel outPassResponseData;
+        OutPassModel outPass;
 
         ViewHolder(final View itemView) {
             super(itemView);
@@ -81,25 +97,40 @@ public class ToSignAdapter extends RecyclerView.Adapter<ToSignAdapter.ViewHolder
             time = itemView.findViewById(R.id.tv_oupass_history_time);
             year = itemView.findViewById(R.id.tv_oupass_history_year);
             itemView.setOnClickListener(view -> {
-                Intent intent = new Intent(itemView.getContext(), PassResponseActivity.class);
-                intent.putExtra(OutPassAttributes.ID, outPassResponseData.getId());
-                intent.putExtra(OutPassAttributes.UID, outPassResponseData.getUid());
-                intent.putExtra(OutPassAttributes.NAME, outPassResponseData.getName());
-                intent.putExtra(OutPassAttributes.PHONE_NUMBER_VISITING, outPassResponseData.getPhoneNumberVisiting());
-                intent.putExtra(OutPassAttributes.BRANCH, outPassResponseData.getBranch());
-                intent.putExtra(OutPassAttributes.YEAR, outPassResponseData.getYear());
-                intent.putExtra(OutPassAttributes.OUT_PASS_TYPE, outPassResponseData.getOutPassType());
-                intent.putExtra(OutPassAttributes.ROOM_NUMBER, outPassResponseData.getRoomNumber());
-                intent.putExtra(OutPassAttributes.DATE_LEAVE, outPassResponseData.getTimeLeave());
-                intent.putExtra(OutPassAttributes.DATE_RETURN, outPassResponseData.getTimeReturn());
-                intent.putExtra(OutPassAttributes.ADDRESS, outPassResponseData.getVisitingAddress());
-                intent.putExtra(OutPassAttributes.PHONE_NUMBER, outPassResponseData.getPhoneNumber());
-                intent.putExtra(OutPassAttributes.REASON, outPassResponseData.getReasonVisit());
-                intent.putExtra(OutPassAttributes.DIRECTOR_SIGNED, outPassResponseData.getDirectorSigned());
-                intent.putExtra(OutPassAttributes.HOD_SIGNED, outPassResponseData.getHodSigned());
-                intent.putExtra(OutPassAttributes.WARDEN_SIGNED, outPassResponseData.getWardenSigned());
-                itemView.getContext().startActivity(intent);
+                Intent intent = null;
+                switch (outPass.getOutPassType()) {
+                    case OutPassType.DAY:
+                        intent = new Intent(itemView.getContext(), DayPassResponseActivity.class);
+                        break;
+                    case OutPassType.DAY_COLLEGE_HOURS:
+                        intent = new Intent(itemView.getContext(), DayWorkingPassResponseActivity.class);
+                        break;
+                    case OutPassType.NIGHT:
+                        intent = new Intent(itemView.getContext(), NightPassResponseActivity.class);
+                        break;
+                }
+                if (intent != null) {
+                    intent.putExtra(OutPassAttributes.ID, outPass.getId());
+                    intent.putExtra(OutPassSource.LABEL, OutPassSource.OUT_PASS_TO_SIGN);
+                    intent.putExtra(OutPassSource.SHOW_QR, false);
+                    itemView.getContext().startActivity(intent);
+                } else {
+                    Toast.makeText(itemView.getContext(), "Invalid Out Pass", Toast.LENGTH_SHORT).show();
+                }
             });
+        }
+
+        public void setBackgroundForPass() {
+            switch (UserInformation.getString(context, UserInformation.StringKey.SCOPE)) {
+                case UserRoles.DIRECTOR:
+                    if (outPass.getWardenSigned() == null ||
+                            outPass.getHodSigned() == null) {
+                        itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.bgColor));
+                    } else if (!outPass.getWardenSigned() ||
+                            !outPass.getHodSigned()) {
+                        itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.bgColor));
+                    }
+            }
         }
     }
 }

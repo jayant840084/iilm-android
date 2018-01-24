@@ -1,8 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
-  ~ Copyright 2018,  Jayant Singh, All rights reserved.
-  -->
-
+<?xml version="1.0" encoding="utf-8"?><!-- ~ Copyright 2018,  Jayant Singh, All rights reserved. -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="in.ac.iilm.iilm">
 
@@ -47,7 +43,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="facultyConsole.PassResponseActivity"
+            android:name="facultyConsole.DayPassResponseActivity"
             android:label="@string/title_activity_approve_deny"
             android:screenOrientation="portrait"
             android:theme="@style/AllowDenyTheme" />
@@ -81,6 +77,11 @@
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
+
+        <activity android:name="auth.ForgotPasswordActivity" />
+        <activity android:name="studentConsole.DayCollegeHoursPassViewActivity" />
+        <activity android:name="facultyConsole.DayWorkingPassResponseActivity" />
+        <activity android:name="facultyConsole.NightPassResponseActivity"></activity>
     </application>
 
 </manifest>

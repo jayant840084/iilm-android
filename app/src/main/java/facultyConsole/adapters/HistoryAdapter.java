@@ -13,13 +13,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import net.models.OutPassModel;
 
 import java.util.List;
 
 import constants.OutPassAttributes;
-import facultyConsole.PassResponseActivity;
+import constants.OutPassSource;
+import constants.OutPassType;
+import facultyConsole.DayPassResponseActivity;
+import facultyConsole.DayWorkingPassResponseActivity;
+import facultyConsole.NightPassResponseActivity;
 import in.ac.iilm.iilm.R;
 import utils.ToDateTime;
 
@@ -57,7 +62,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         try {
             switch (mScope) {
                 case "director":
-                    setMessage(mOutPassList.get(position).getDirectorSigned(), holder);
+                    setMessage(getDirectorSigned(mOutPassList.get(position)), holder);
                     break;
                 case "hod":
                     setMessage(mOutPassList.get(position).getHodSigned(), holder);
@@ -68,7 +73,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
             }
         } catch (NullPointerException ignore) {
         }
-        holder.outPassResponseData = mOutPassList.get(position);
+        holder.outPass = mOutPassList.get(position);
     }
 
     @Override
@@ -77,8 +82,9 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
     }
 
     public void updateDataSet(List<OutPassModel> outPasses) {
-        mOutPassList.clear();
-        mOutPassList.addAll(outPasses);
+        this.mOutPassList.clear();
+        this.notifyDataSetChanged();
+        this.mOutPassList.addAll(outPasses);
         this.notifyDataSetChanged();
     }
 
@@ -114,6 +120,15 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
                         R.color.deny));
     }
 
+    private Boolean getDirectorSigned(OutPassModel outPass) {
+        if (outPass.getDirectorPrioritySign() != null &&
+                outPass.getDirectorPrioritySign()) {
+            return outPass.getDirectorPrioritySign();
+        } else {
+            return outPass.getDirectorSigned();
+        }
+    }
+
     class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView date;
@@ -121,7 +136,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         TextView time;
         TextView status;
         LinearLayout stateIndicator;
-        OutPassModel outPassResponseData;
+        OutPassModel outPass;
 
         ViewHolder(final View itemView) {
             super(itemView);
@@ -131,21 +146,26 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
             status = itemView.findViewById(R.id.tv_oupass_history_status);
             stateIndicator = itemView.findViewById(R.id.ll_state_indicator);
             itemView.setOnClickListener(view -> {
-                Intent intent = new Intent(itemView.getContext(), PassResponseActivity.class);
-                intent.putExtra(OutPassAttributes.ID, outPassResponseData.getId());
-                intent.putExtra(OutPassAttributes.UID, outPassResponseData.getUid());
-                intent.putExtra(OutPassAttributes.NAME, outPassResponseData.getName());
-                intent.putExtra(OutPassAttributes.PHONE_NUMBER_VISITING, outPassResponseData.getPhoneNumberVisiting());
-                intent.putExtra(OutPassAttributes.BRANCH, outPassResponseData.getBranch());
-                intent.putExtra(OutPassAttributes.YEAR, outPassResponseData.getYear());
-                intent.putExtra(OutPassAttributes.OUT_PASS_TYPE, outPassResponseData.getOutPassType());
-                intent.putExtra(OutPassAttributes.ROOM_NUMBER, outPassResponseData.getRoomNumber());
-                intent.putExtra(OutPassAttributes.DATE_LEAVE, outPassResponseData.getTimeLeave());
-                intent.putExtra(OutPassAttributes.DATE_RETURN, outPassResponseData.getTimeReturn());
-                intent.putExtra(OutPassAttributes.ADDRESS, outPassResponseData.getVisitingAddress());
-                intent.putExtra(OutPassAttributes.PHONE_NUMBER, outPassResponseData.getPhoneNumber());
-                intent.putExtra(OutPassAttributes.REASON, outPassResponseData.getReasonVisit());
-                itemView.getContext().startActivity(intent);
+                Intent intent = null;
+                switch (outPass.getOutPassType()) {
+                    case OutPassType.DAY:
+                        intent = new Intent(itemView.getContext(), DayPassResponseActivity.class);
+                        break;
+                    case OutPassType.DAY_COLLEGE_HOURS:
+                        intent = new Intent(itemView.getContext(), DayWorkingPassResponseActivity.class);
+                        break;
+                    case OutPassType.NIGHT:
+                        intent = new Intent(itemView.getContext(), NightPassResponseActivity.class);
+                        break;
+                }
+                if (intent != null) {
+                    intent.putExtra(OutPassAttributes.ID, outPass.getId());
+                    intent.putExtra(OutPassSource.LABEL, OutPassSource.OUT_PASS_SIGNED);
+                    intent.putExtra(OutPassSource.SHOW_QR, false);
+                    itemView.getContext().startActivity(intent);
+                } else {
+                    Toast.makeText(itemView.getContext(), "Invalid Out Pass", Toast.LENGTH_SHORT).show();
+                }
             });
         }
     }

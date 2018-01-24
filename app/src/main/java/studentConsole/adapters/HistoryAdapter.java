@@ -13,14 +13,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import net.models.OutPassModel;
 
 import java.util.List;
 
 import constants.OutPassAttributes;
+import constants.OutPassSource;
 import constants.OutPassType;
 import in.ac.iilm.iilm.R;
+import studentConsole.DayCollegeHoursPassViewActivity;
 import studentConsole.DayPassViewActivity;
 import studentConsole.NightPassViewActivity;
 import utils.ToDateTime;
@@ -45,50 +48,82 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        ToDateTime dateTimeLeave = new ToDateTime(Long.parseLong(outPassList.get(position).getTimeLeave()));
+        OutPassModel outPass = outPassList.get(position);
+
+        ToDateTime dateTimeLeave = new ToDateTime(Long.parseLong(outPass.getTimeLeave()));
 
         holder.date.setText(dateTimeLeave.getDate());
         holder.time.setText(dateTimeLeave.getTime());
-        holder.address.setText(outPassList.get(position).getVisitingAddress());
+        holder.address.setText(outPass.getVisitingAddress());
 
-        Log.d("TYPEEEEEEE", outPassList.get(position).getOutPassType());
-        if (outPassList.get(position).getOutPassType().equals(OutPassType.DAY_NOT_COLLEGE_HOURS)) {
-            try {
-                if (outPassList.get(position).getWardenSigned()) {
-                    holder.allowed.setText("ALLOWED");
-                    holder.allowed.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.allow));
-                    holder.stateIndicator.setBackgroundColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.allow));
-                } else {
-                    holder.allowed.setText("DENIED");
-                    holder.allowed.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.deny));
-                    holder.stateIndicator.setBackgroundColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.deny));
+        switch (outPass.getOutPassType()) {
+            case OutPassType.DAY:
+                try {
+                    if (outPass.getWardenSigned()) {
+                        setAllow(holder);
+                    } else {
+                        setDenied(holder);
+                    }
+                } catch (NullPointerException e) {
+                    setWaiting(holder);
                 }
-            } catch (NullPointerException e) {
-                holder.allowed.setText("WAITING");
-                holder.allowed.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.waiting));
-                holder.stateIndicator.setBackgroundColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.waiting));
-            }
-        } else {
-            try {
-                if (outPassList.get(position).getHodSigned()
-                        && outPassList.get(position).getDirectorSigned()
-                        && outPassList.get(position).getWardenSigned()) {
-                    holder.allowed.setText("ALLOWED");
-                    holder.allowed.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.allow));
-                    holder.stateIndicator.setBackgroundColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.allow));
+                break;
+            case OutPassType.DAY_COLLEGE_HOURS:
+                if (outPass.getHodSigned() != null &&
+                        !outPass.getHodSigned()) {
+                    setDenied(holder);
+                } else if (outPass.getWardenSigned() != null &&
+                        !outPass.getWardenSigned()) {
+                    setDenied(holder);
+                } else if (outPass.getHodSigned() != null &&
+                        outPass.getWardenSigned() != null) {
+                    setAllow(holder);
                 } else {
-                    holder.allowed.setText("DENIED");
-                    holder.allowed.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.deny));
-                    holder.stateIndicator.setBackgroundColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.deny));
+                    setWaiting(holder);
                 }
-            } catch (NullPointerException e) {
-                holder.allowed.setText("WAITING");
-                holder.allowed.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.waiting));
-                holder.stateIndicator.setBackgroundColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.waiting));
-            }
+                break;
+            case OutPassType.NIGHT:
+                if (outPass.getDirectorPrioritySign() != null &&
+                        outPass.getDirectorPrioritySign()) {
+                    setAllow(holder);
+                } else if (outPass.getDirectorSigned() != null &&
+                        !outPass.getDirectorSigned()) {
+                    setDenied(holder);
+                } else if (outPass.getHodSigned() != null &&
+                        !outPass.getHodSigned()) {
+                    setDenied(holder);
+                } else if (outPass.getWardenSigned() != null &&
+                        !outPass.getWardenSigned()) {
+                    setDenied(holder);
+                } else if (outPass.getHodSigned() != null &&
+                        outPass.getDirectorSigned() != null &&
+                        outPass.getWardenSigned() != null) {
+                    setAllow(holder);
+                } else {
+                    setWaiting(holder);
+                }
+                break;
         }
 
         holder.outPassResponseData = outPassList.get(position);
+    }
+
+    private void setAllow(ViewHolder holder) {
+        holder.allowed.setText("ALLOWED");
+        holder.allowed.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.allow));
+        holder.stateIndicator.setBackgroundColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.allow));
+    }
+
+    private void setDenied(ViewHolder holder) {
+        holder.allowed.setText("DENIED");
+        holder.allowed.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.deny));
+        holder.stateIndicator.setBackgroundColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.deny));
+    }
+
+    private void setWaiting(ViewHolder holder) {
+        holder.allowed.setText("WAITING");
+        holder.allowed.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.waiting));
+        holder.stateIndicator.setBackgroundColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.waiting));
     }
 
     @Override
@@ -118,23 +153,26 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
             allowed = itemView.findViewById(R.id.tv_oupass_history_allowed);
             stateIndicator = itemView.findViewById(R.id.ll_state_indicator);
             itemView.setOnClickListener(view -> {
-                Intent intent;
-                if (outPassResponseData.getOutPassType().equals(OutPassType.DAY_NOT_COLLEGE_HOURS)) {
-                    intent = new Intent(itemView.getContext(), DayPassViewActivity.class);
-                } else {
-                    intent = new Intent(itemView.getContext(), NightPassViewActivity.class);
+                Intent intent = null;
+                switch (outPassResponseData.getOutPassType()) {
+                    case OutPassType.DAY:
+                        intent = new Intent(itemView.getContext(), DayPassViewActivity.class);
+                        break;
+                    case OutPassType.DAY_COLLEGE_HOURS:
+                        intent = new Intent(itemView.getContext(), DayCollegeHoursPassViewActivity.class);
+                        break;
+                    case OutPassType.NIGHT:
+                        intent = new Intent(itemView.getContext(), NightPassViewActivity.class);
+                        break;
                 }
-                intent.putExtra(OutPassAttributes.ID, outPassResponseData.getId());
-                intent.putExtra(OutPassAttributes.DATE_LEAVE, outPassResponseData.getTimeLeave());
-                intent.putExtra(OutPassAttributes.DATE_RETURN, outPassResponseData.getTimeReturn());
-                intent.putExtra(OutPassAttributes.ADDRESS, outPassResponseData.getVisitingAddress());
-                intent.putExtra(OutPassAttributes.PHONE_NUMBER, outPassResponseData.getPhoneNumber());
-                intent.putExtra(OutPassAttributes.REASON, outPassResponseData.getReasonVisit());
-                intent.putExtra(OutPassAttributes.HOD_SIGNED, outPassResponseData.getHodSigned());
-                intent.putExtra(OutPassAttributes.OUT_PASS_TYPE, outPassResponseData.getOutPassType());
-                intent.putExtra(OutPassAttributes.WARDEN_SIGNED, outPassResponseData.getWardenSigned());
-                intent.putExtra(OutPassAttributes.DIRECTOR_SIGNED, outPassResponseData.getDirectorSigned());
-                itemView.getContext().startActivity(intent);
+                if (intent != null) {
+                    intent.putExtra(OutPassAttributes.ID, outPassResponseData.getId());
+                    intent.putExtra(OutPassSource.LABEL, OutPassSource.OUT_PASS);
+                    intent.putExtra(OutPassSource.SHOW_QR, true);
+                    itemView.getContext().startActivity(intent);
+                } else {
+                    Toast.makeText(itemView.getContext(), "Invalid Out Pass", Toast.LENGTH_SHORT).show();
+                }
             });
         }
     }

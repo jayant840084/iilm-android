@@ -44,12 +44,14 @@ import utils.UserInformation;
 
 public class RequestFragment extends Fragment implements AdapterView.OnItemSelectedListener {
 
+    private static final String NOT_APPLICABLE = "Not Applicable";
+
     private int mYear, mMonth, mDay, mHour, mMinute;
 
     private EditText etPhoneNumber;
     private EditText etVisitingAddress;
     private EditText etReasonVisit;
-
+    private EditText etStudentRemark;
 
     private String tempDateLeave;
     private String tempTimeLeave;
@@ -88,6 +90,7 @@ public class RequestFragment extends Fragment implements AdapterView.OnItemSelec
         etPhoneNumber = view.findViewById(R.id.etPhoneNumber);
         etVisitingAddress = view.findViewById(R.id.etVisitingAddress);
         etReasonVisit = view.findViewById(R.id.etReasonLeave);
+        etStudentRemark = view.findViewById(R.id.etStudentRemark);
 
         mProgressBar = new ProgressBarUtil(
                 view.findViewById(R.id.outpass_request_progress_background),
@@ -96,8 +99,9 @@ public class RequestFragment extends Fragment implements AdapterView.OnItemSelec
         mSpinner = view.findViewById(R.id.outpass_spinner);
 
         List<String> list = new LinkedList<>();
-        list.add("Day Out Pass");
-        list.add("Night Out Pass");
+        list.add(OutPassType.DAY);
+        list.add(OutPassType.DAY_COLLEGE_HOURS);
+        list.add(OutPassType.NIGHT);
         list.add("Select Type");
 
         final ArrayAdapter<String> adapter = new ArrayAdapter<String>(
@@ -136,9 +140,12 @@ public class RequestFragment extends Fragment implements AdapterView.OnItemSelec
                 tempDateLeave = i2 + "/" + (i1 + 1) + "/" + i;
                 String dateLeaveString = "Leave Date: " + i2 + " - " + (i1 + 1) + " - " + i;
                 dateOfLeave.setText(dateLeaveString);
-                String returnDateString = "Return Date: " + i2 + " - " + (i1 + 1) + " - " + i;
-                if (mSpinner.getSelectedItem().toString().equals("Day Out Pass"))
-                    dateOfReturn.setText(returnDateString);
+                /*
+                 *  not applicable since the leave date and return date are the same.
+                 */
+                if (mSpinner.getSelectedItem().toString().equals(OutPassType.DAY) ||
+                        mSpinner.getSelectedItem().toString().equals(OutPassType.DAY_COLLEGE_HOURS))
+                    dateOfReturn.setText(NOT_APPLICABLE);
             }, mYear, mMonth, mDay);
             datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
             datePickerDialog.show();
@@ -175,7 +182,7 @@ public class RequestFragment extends Fragment implements AdapterView.OnItemSelec
                 String dateReturnString = "Return Date: " + i2 + " - " + (i1 + 1) + " - " + i;
                 dateOfReturn.setText(dateReturnString);
             }, mYear, mMonth, mDay);
-            datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+            datePickerDialog.getDatePicker().setMinDate(dateLeaveMilliSec);
             datePickerDialog.show();
         });
 
@@ -227,7 +234,8 @@ public class RequestFragment extends Fragment implements AdapterView.OnItemSelec
                         dateReturnMilliSec,
                         etPhoneNumber.getText().toString(),
                         etVisitingAddress.getText().toString(),
-                        etReasonVisit.getText().toString()
+                        etReasonVisit.getText().toString(),
+                        etStudentRemark.getText().toString()
                 );
 
                 call.enqueue(new Callback<ResponseBody>() {
@@ -258,7 +266,8 @@ public class RequestFragment extends Fragment implements AdapterView.OnItemSelec
                 validateLeaveDate() &&
                 validateLeaveTime() &&
                 validateReturnDate() &&
-                validateReturnTime();
+                validateReturnTime() &&
+                validateStudentRemark();
     }
 
     private boolean validateReasonLeave() {
@@ -322,16 +331,14 @@ public class RequestFragment extends Fragment implements AdapterView.OnItemSelec
         return flag;
     }
 
+    private boolean validateStudentRemark() {
+        // student remark is optional hence any value is valid
+        return true;
+    }
+
     private boolean isDayOutPass() {
-        return mSpinner.getSelectedItem().toString().equals(OutPassType.DAY_NOT_COLLEGE_HOURS);
-    }
-
-    private boolean isReturnDateBeforeLeaveDate() {
-        return dateReturnMilliSec < dateLeaveMilliSec;
-    }
-
-    private boolean isReturnTimeBeforeLeaveTime() {
-        return dateReturnMilliSec < dateLeaveMilliSec;
+        return mSpinner.getSelectedItem().toString().equals(OutPassType.DAY) ||
+                mSpinner.getSelectedItem().toString().equals(OutPassType.DAY_COLLEGE_HOURS);
     }
 
     private void outPassRequestSuccessful() {
@@ -350,11 +357,11 @@ public class RequestFragment extends Fragment implements AdapterView.OnItemSelec
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        if (i == 0) {
-            dateOfReturn.setEnabled(false);
-            dateOfReturn.setText("Return Date: " + tempDateLeave);
+        if (mSpinner.getSelectedItem().toString().equals(OutPassType.DAY) ||
+                mSpinner.getSelectedItem().toString().equals(OutPassType.DAY_COLLEGE_HOURS)) {
+            dateOfReturn.setVisibility(View.GONE);
         } else {
-            dateOfReturn.setEnabled(true);
+            dateOfReturn.setVisibility(View.VISIBLE);
             dateOfReturn.setText(null);
             dateOfReturn.setHint("Return Date");
         }

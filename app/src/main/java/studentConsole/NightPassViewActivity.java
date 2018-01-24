@@ -7,12 +7,10 @@ package studentConsole;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Point;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -22,12 +20,19 @@ import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 
+import net.models.OutPassModel;
+
 import constants.OutPassAttributes;
+import constants.OutPassSource;
 import in.ac.iilm.iilm.R;
-import pojo.GuardLogLeavePOJO;
+import pojo.GuardLogPojo;
+import utils.PassHelper;
+import utils.QrHelper;
 import utils.ToDateTime;
 
 public class NightPassViewActivity extends AppCompatActivity {
+
+    private OutPassModel outPass;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,58 +41,46 @@ public class NightPassViewActivity extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
-        }
+        PassHelper passHelper = new PassHelper(this);
 
-        getSupportActionBar().setTitle(extras.getString(OutPassAttributes.OUT_PASS_TYPE));
+        outPass = passHelper.getOutPassFromDb(extras.getInt(OutPassSource.LABEL),
+                extras.getString(OutPassAttributes.ID));
+
+        getSupportActionBar().setTitle(outPass.getOutPassType());
 
         // only generate the qr code if the out pass has been confirmed
-        if (extras.get(OutPassAttributes.WARDEN_SIGNED) != null &&
-                extras.get(OutPassAttributes.HOD_SIGNED) != null &&
-                extras.get(OutPassAttributes.DIRECTOR_SIGNED) != null)
-            if (extras.getBoolean(OutPassAttributes.WARDEN_SIGNED) &&
-                    extras.getBoolean(OutPassAttributes.HOD_SIGNED) &&
-                    extras.getBoolean(OutPassAttributes.DIRECTOR_SIGNED))
-                try {
-                    ImageView qRCode = findViewById(R.id.iv_QRCode);
-                    BitMatrix bitMatrix;
+        if (extras.getBoolean(OutPassSource.SHOW_QR)) {
+            if (outPass.getDirectorPrioritySign() != null) {
+                if (outPass.getDirectorPrioritySign()) {
+                    GuardLogPojo guardLogPojo = new GuardLogPojo();
+                    guardLogPojo.setId(outPass.getId());
+                    guardLogPojo.setName(outPass.getName());
 
-                    Point point = new Point();
-                    getWindowManager().getDefaultDisplay().getSize(point);
-                    int widthX = point.x / 2,
-                            heightY = widthX;
-
-                    GuardLogLeavePOJO guardLogLeavePOJO = new GuardLogLeavePOJO();
-                    guardLogLeavePOJO.setId(extras.getString(OutPassAttributes.ID));
-                    guardLogLeavePOJO.setName(extras.getString(OutPassAttributes.NAME));
-
-                    bitMatrix = new MultiFormatWriter().encode(
-                            new GsonBuilder().create().toJson(guardLogLeavePOJO),
-                            BarcodeFormat.QR_CODE,
-                            widthX, heightY, null
+                    new QrHelper(this).generateAndSetQr(
+                            findViewById(R.id.iv_QRCode),
+                            guardLogPojo
                     );
-                    int width = bitMatrix.getWidth(),
-                            height = bitMatrix.getHeight();
-                    int[] pixels = new int[height * width];
-                    for (int y = 0; y < height; y++) {
-                        int offset = y * width;
-                        for (int x = 0; x < width; x++) {
-                            pixels[offset + x] = bitMatrix.get(x, y) ? Color.BLACK : Color.WHITE;
-                        }
-                    }
-                    Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-                    bitmap.setPixels(pixels, 0, width, 0, 0, width, height);
-                    qRCode.setImageBitmap(bitmap);
-                    qRCode.setVisibility(View.VISIBLE);
-                } catch (WriterException e) {
-                    e.printStackTrace();
                 }
+            } else if (outPass.getWardenSigned() != null &&
+                    outPass.getHodSigned() != null &&
+                    outPass.getDirectorSigned() != null) {
+                if (outPass.getWardenSigned() &&
+                        outPass.getHodSigned() &&
+                        outPass.getDirectorSigned()) {
+                    GuardLogPojo guardLogPojo = new GuardLogPojo();
+                    guardLogPojo.setId(outPass.getId());
+                    guardLogPojo.setName(outPass.getName());
 
-        ToDateTime dateTimeLeave = new ToDateTime(Long.parseLong(extras.getString(OutPassAttributes.DATE_LEAVE)));
-        ToDateTime dateTimeReturn = new ToDateTime(Long.parseLong(extras.getString(OutPassAttributes.DATE_RETURN)));
+                    new QrHelper(this).generateAndSetQr(
+                            findViewById(R.id.iv_QRCode),
+                            guardLogPojo
+                    );
+                }
+            }
+        }
+
+        ToDateTime dateTimeLeave = new ToDateTime(Long.parseLong(outPass.getTimeLeave()));
+        ToDateTime dateTimeReturn = new ToDateTime(Long.parseLong(outPass.getTimeReturn()));
 
         TextView dateLeave = findViewById(R.id.tv_approve_date_leave);
         dateLeave.setText(dateTimeLeave.getDate());
@@ -102,66 +95,42 @@ public class NightPassViewActivity extends AppCompatActivity {
         dateReturn.setText(dateTimeReturn.getDate());
 
         TextView address = findViewById(R.id.tv_approve_address);
-        address.setText(extras.getString(OutPassAttributes.ADDRESS));
+        address.setText(outPass.getVisitingAddress());
 
         TextView phoneNumber = findViewById(R.id.tv_approve_phone_number);
-        phoneNumber.setText(extras.getString(OutPassAttributes.PHONE_NUMBER));
+        phoneNumber.setText(outPass.getPhoneNumber());
 
         TextView reason = findViewById(R.id.tv_approve_reason);
-        reason.setText(extras.getString(OutPassAttributes.REASON));
+        reason.setText(outPass.getReasonVisit());
 
-        TextView directorApproved = findViewById(R.id.tv_approve_director);
-        if (extras.get(OutPassAttributes.DIRECTOR_SIGNED) != null) {
-            if (extras.getBoolean(OutPassAttributes.DIRECTOR_SIGNED)) {
-                setAllowed(directorApproved);
-            } else {
-                setDenied(directorApproved);
-            }
-        } else {
-            setWaiting(directorApproved);
-        }
+        ((TextView) findViewById(R.id.tv_approve_student_remark))
+                .setText(outPass.getStudentRemark());
 
-        TextView hodApproved = findViewById(R.id.tv_approve_hod);
-        if (extras.get(OutPassAttributes.HOD_SIGNED) != null) {
-            if (extras.getBoolean(OutPassAttributes.HOD_SIGNED)) {
-                setAllowed(hodApproved);
-            } else {
-                setDenied(hodApproved);
-            }
-        } else {
-            setWaiting(hodApproved);
-        }
+        ((TextView) findViewById(R.id.tv_approve_warden_remark))
+                .setText(outPass.getWardenRemark());
 
-        TextView wardenApproved = findViewById(R.id.tv_approve_warden);
-        if (extras.get(OutPassAttributes.WARDEN_SIGNED) != null) {
-            if (extras.getBoolean(OutPassAttributes.WARDEN_SIGNED)) {
-                setAllowed(wardenApproved);
-            } else {
-                setDenied(wardenApproved);
-            }
-        } else {
-            setWaiting(wardenApproved);
-        }
+        passHelper.setStatus(outPass.getWardenSigned(),
+                findViewById(R.id.tv_approve_warden));
+
+        ((TextView) findViewById(R.id.tv_approve_hod_remark))
+                .setText(outPass.getHodRemark());
+
+        passHelper.setStatus(outPass.getHodSigned(),
+                findViewById(R.id.tv_approve_hod));
+
+        ((TextView) findViewById(R.id.tv_approve_director_remark))
+                .setText(outPass.getDirectorRemark());
+
+        passHelper.setStatus(getDirectorSigned(outPass),
+                findViewById(R.id.tv_approve_director));
     }
 
-    private void setAllowed(TextView textView) {
-        textView.setText(getString(R.string.allowed));
-        textView.setTextColor(ContextCompat.getColor(
-                this,
-                R.color.allow));
-    }
-
-    private void setDenied(TextView textView) {
-        textView.setText(getString(R.string.denied));
-        textView.setTextColor(ContextCompat.getColor(
-                this,
-                R.color.deny));
-    }
-
-    private void setWaiting(TextView textView) {
-        textView.setText(getString(R.string.waiting));
-        textView.setTextColor(ContextCompat.getColor(
-                this,
-                R.color.waiting));
+    private Boolean getDirectorSigned(OutPassModel outPass) {
+        if (outPass.getDirectorPrioritySign() != null &&
+                outPass.getDirectorPrioritySign()) {
+            return outPass.getDirectorPrioritySign();
+        } else {
+            return outPass.getDirectorSigned();
+        }
     }
 }

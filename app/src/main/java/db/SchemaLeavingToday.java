@@ -26,10 +26,17 @@ class SchemaLeavingToday {
             LeavingTodayColumns.COLUMN_NAME_TIME_RETURN + " TEXT," +
             LeavingTodayColumns.COLUMN_NAME_PHONE_NUMBER_VISITING + " TEXT," +
             LeavingTodayColumns.COLUMN_NAME_REASON_VISIT + " TEXT," +
+            LeavingTodayColumns.COLUMN_NAME_STUDENT_REMARK + " TEXT," +
             LeavingTodayColumns.COLUMN_NAME_VISITING_ADDRESS + " TEXT," +
             LeavingTodayColumns.COLUMN_NAME_WARDEN_SIGNED + " BOOLEAN null," +
+            LeavingTodayColumns.COLUMN_NAME_WARDEN_REMARK + " TEXT," +
+            LeavingTodayColumns.COLUMN_NAME_WARDEN_TALKED_TO_PARENT + " BOOLEAN null," +
             LeavingTodayColumns.COLUMN_NAME_HOD_SIGNED + " BOOLEAN null," +
+            LeavingTodayColumns.COLUMN_NAME_HOD_REMARK + " TEXT," +
+            LeavingTodayColumns.COLUMN_NAME_HOD_TALKED_TO_PARENT + " BOOLEAN null," +
             LeavingTodayColumns.COLUMN_NAME_DIRECTOR_SIGNED + " BOOLEAN null," +
+            LeavingTodayColumns.COLUMN_NAME_DIRECTOR_REMARK + " TEXT," +
+            LeavingTodayColumns.COLUMN_NAME_DIRECTOR_PRIORITY_SIGN + " BOOLEAN null," +
             LeavingTodayColumns.COLUMN_OUT_PASS_TYPE + " TEXT" + ")";
 
     private SchemaLeavingToday() {
@@ -48,10 +55,17 @@ class SchemaLeavingToday {
         static final String COLUMN_NAME_TIME_RETURN = "timeReturn";
         static final String COLUMN_NAME_PHONE_NUMBER_VISITING = "phoneNumberVisiting";
         static final String COLUMN_NAME_REASON_VISIT = "reasonVisit";
+        static final String COLUMN_NAME_STUDENT_REMARK = "studentRemark";
         static final String COLUMN_NAME_VISITING_ADDRESS = "visitingAddress";
         static final String COLUMN_NAME_WARDEN_SIGNED = "wardenSigned";
+        static final String COLUMN_NAME_WARDEN_REMARK = "wardenRemark";
+        static final String COLUMN_NAME_WARDEN_TALKED_TO_PARENT = "wardenTalkParent";
         static final String COLUMN_NAME_HOD_SIGNED = "hodSigned";
+        static final String COLUMN_NAME_HOD_REMARK = "hodRemark";
+        static final String COLUMN_NAME_HOD_TALKED_TO_PARENT = "hodTalkParent";
         static final String COLUMN_NAME_DIRECTOR_SIGNED = "directorSigned";
+        static final String COLUMN_NAME_DIRECTOR_REMARK = "directorRemark";
+        static final String COLUMN_NAME_DIRECTOR_PRIORITY_SIGN = "directorPrioritySign";
         static final String COLUMN_OUT_PASS_TYPE = "outPassType";
     }
 }

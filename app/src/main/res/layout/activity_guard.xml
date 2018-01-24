@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright 2018,  Jayant Singh, All rights reserved.
   -->
 
@@ -7,6 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/bgColor"
     tools:mContext="in.ac.iilm.iilm.guardConsole.GuardActivity">
 
     <FrameLayout
@@ -18,29 +18,75 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <Button
-                android:id="@+id/bt_guard_scan"
+            <android.support.v7.widget.CardView
+                android:id="@+id/bt_guard_scan_align"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:background="@drawable/button_background"
-                android:text="Scan" />
+                android:layout_alignParentBottom="true">
 
-            <TextView
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <Button
+                            android:id="@+id/bt_guard_scan"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/white_button_background"
+                            android:text="Scan" />
+                    </LinearLayout>
+                </android.support.v7.widget.CardView>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
                 android:id="@+id/tv_guard_check_failed"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_above="@id/bt_guard_scan"
-                android:gravity="center"
-                android:text="Check Failed, Please try again..."
-                android:textSize="30sp"
-                android:visibility="gone" />
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:layout_margin="@dimen/approve_deny_padding"
+                android:layout_alignParentTop="true" >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="4dp"
+                        android:background="#444444"
+                        android:orientation="vertical" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:padding="@dimen/sixteen"
+                        android:text="Check Failed,"
+                        android:textSize="20sp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:paddingLeft="@dimen/sixteen"
+                        android:paddingRight="@dimen/sixteen"
+                        android:paddingBottom="@dimen/sixteen"
+                        android:text="Please try again..."
+                        android:textSize="20sp"/>
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
 
             <FrameLayout
                 android:id="@+id/guard_pass_info_container"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_above="@id/bt_guard_scan"
+                android:layout_above="@id/bt_guard_scan_align"
                 android:layout_alignParentTop="true" />
         </RelativeLayout>
 

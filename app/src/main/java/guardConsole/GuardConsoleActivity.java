@@ -8,31 +8,30 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
+import net.models.GuardLogModel;
 import net.requests.LogLeaveRequest;
 import net.requests.LogReturnRequest;
 import net.requests.LogoutRequest;
 
 import auth.LoginActivity;
-import constants.OutPassAttributes;
-import constants.OutPassType;
-import guardConsole.layouts.DayPassFragment;
-import guardConsole.layouts.GuardPassInfoFragment;
-import guardConsole.layouts.NightPassFragment;
+import guardConsole.layouts.GuardDenyFragment;
+import guardConsole.layouts.GuardAllowFragment;
 import in.ac.iilm.iilm.R;
-import pojo.GuardLogLeavePOJO;
+import pojo.GuardLogPojo;
 import pojo.GuardLogReturnPOJO;
+import utils.GuardPassHelper;
 import utils.ProgressBarUtil;
 
 public class GuardConsoleActivity extends AppCompatActivity {
@@ -42,7 +41,7 @@ public class GuardConsoleActivity extends AppCompatActivity {
             "Log Return"
     };
     private ProgressBarUtil mProgressBar;
-    private TextView mRequestFailed;
+    private CardView mRequestFailed;
     private int currentType;
 
     @Override
@@ -77,7 +76,9 @@ public class GuardConsoleActivity extends AppCompatActivity {
                         startActivity(new Intent(this, LoginActivity.class));
                         this.finish();
                     } else {
-                        Toast.makeText(this, "Logout Failed", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this,
+                                getString(R.string.logout_failed),
+                                Toast.LENGTH_SHORT).show();
                     }
                 });
                 return true;
@@ -106,20 +107,19 @@ public class GuardConsoleActivity extends AppCompatActivity {
 
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
         Gson gson = new Gson();
+        GuardLogPojo qrData = gson.fromJson(result.getContents(), GuardLogPojo.class);
 
         switch (currentType) {
             case 0:
-                GuardLogLeavePOJO leaveData = gson.fromJson(result.getContents(), GuardLogLeavePOJO.class);
-                if (leaveData != null) {
+                if (qrData != null) {
                     mProgressBar.showProgress();
-                    initiateLeave(leaveData);
+                    initiateLeave(qrData);
                 }
                 break;
             case 1:
-                GuardLogReturnPOJO returnData = gson.fromJson(result.getContents(), GuardLogReturnPOJO.class);
-                if (returnData != null) {
+                if (qrData != null) {
                     mProgressBar.showProgress();
-                    initiateReturn(returnData);
+                    initiateReturn(qrData);
                 }
                 break;
             default:
@@ -127,16 +127,14 @@ public class GuardConsoleActivity extends AppCompatActivity {
         }
     }
 
-    private void initiateLeave(GuardLogLeavePOJO data) {
-
-        new LogLeaveRequest().execute(this, data.getId(), (success, passData) -> {
-
-            if (success) {
-                if (passData.getBoolean(OutPassAttributes.ALLOWED, false)) {
-                    allowLeaveExit(passData);
-                } else {
-                    denyLeaveExit();
+    private void initiateLeave(GuardLogPojo data) {
+        new LogLeaveRequest().execute(this, data.getId(), (errMsg, guardLogPass) -> {
+            if (guardLogPass != null) {
+                if (guardLogPass.isAllowed()) {
+                    allow(guardLogPass);
                 }
+            } else if (errMsg != null) {
+                deny(errMsg);
             } else {
                 requestFailed();
             }
@@ -144,16 +142,14 @@ public class GuardConsoleActivity extends AppCompatActivity {
         });
     }
 
-    private void initiateReturn(GuardLogReturnPOJO data) {
-
-        new LogReturnRequest().execute(this, data.getId(), (success, passData) -> {
-
-            if (success) {
-                if (passData.getBoolean(OutPassAttributes.ALLOWED, false)) {
-                    allowReturnEntry(passData);
-                } else {
-                    denyReturnEntry();
+    private void initiateReturn(GuardLogPojo data) {
+        new LogReturnRequest().execute(this, data.getId(), (errMsg, guardLogPass) -> {
+            if (guardLogPass != null) {
+                if (guardLogPass.isAllowed()) {
+                    allow(guardLogPass);
                 }
+            } else if (errMsg != null) {
+                deny(errMsg);
             } else {
                 requestFailed();
             }
@@ -161,53 +157,27 @@ public class GuardConsoleActivity extends AppCompatActivity {
         });
     }
 
-    private void allowLeaveExit(Bundle passData) {
-
-        if (passData.getString(OutPassAttributes.OUT_PASS_TYPE).equals(OutPassType.DAY_NOT_COLLEGE_HOURS))
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.guard_pass_info_container, DayPassFragment.newInstance(passData))
-                    .commit();
-        else
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.guard_pass_info_container, NightPassFragment.newInstance(passData))
-                    .commit();
-    }
-
-    private void denyLeaveExit() {
-
-        Bundle args = new Bundle();
-        args.putString("name", "");
-        args.putBoolean("isAllowed", false);
-
+    private void allow(GuardLogModel guardLogModel) {
+        GuardPassHelper.setGuardLogModel(guardLogModel);
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.guard_pass_info_container, GuardPassInfoFragment.newInstance(args))
+                .replace(R.id.guard_pass_info_container, new GuardAllowFragment())
+                .commit();
+    }
+
+    private void deny(String message) {
+        GuardPassHelper.setMessage(message);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.guard_pass_info_container, new GuardDenyFragment())
                 .commit();
     }
 
     private void requestFailed() {
+        if (getSupportFragmentManager().getFragments().size() > 0) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .remove(getSupportFragmentManager().getFragments().get(0))
+                    .commit();
+        }
         mRequestFailed.setVisibility(View.VISIBLE);
-    }
-
-    private void allowReturnEntry(Bundle passData) {
-
-        if (passData.getString(OutPassAttributes.OUT_PASS_TYPE).equals(OutPassType.DAY_NOT_COLLEGE_HOURS))
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.guard_pass_info_container, DayPassFragment.newInstance(passData))
-                    .commit();
-        else
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.guard_pass_info_container, NightPassFragment.newInstance(passData))
-                    .commit();
-    }
-
-    private void denyReturnEntry() {
-
-        Bundle args = new Bundle();
-        args.putString("name", "");
-        args.putBoolean("isAllowed", false);
-
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.guard_pass_info_container, GuardPassInfoFragment.newInstance(args))
-                .commit();
     }
 }

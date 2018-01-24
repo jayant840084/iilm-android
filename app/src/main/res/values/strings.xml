@@ -37,6 +37,7 @@
     </string-array>
 
     <string name="logout_failed">Failed to logout</string>
+    <string name="something_failed">Something went wrong, Please try again.</string>
 
     <string name="content_description_logo">logo</string>
     <string name="no_account_message">No account yet? Contact college</string>

@@ -1,130 +1,124 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright 2018,  Jayant Singh, All rights reserved.
   -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginLeft="@dimen/outpass_history_item_padding_sides"
-    android:layout_marginRight="@dimen/outpass_history_item_padding_sides"
-    android:layout_marginTop="@dimen/outpass_history_item_padding_top"
-    android:background="@drawable/rv_background"
-    android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/ll_state_indicator"
-        android:layout_width="match_parent"
-        android:layout_height="4dp"
-        android:orientation="vertical" />
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:layout_marginLeft="@dimen/approve_deny_padding"
+    android:layout_marginRight="@dimen/approve_deny_padding"
+    android:layout_marginTop="@dimen/approve_deny_padding">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="12dp">
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/ll_state_indicator"
+            android:layout_width="match_parent"
+            android:layout_height="4dp"
+            android:orientation="vertical" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingLeft="@dimen/outpass_history_item_padding_sides"
-            android:paddingRight="@dimen/outpass_history_item_padding_sides"
-            android:paddingTop="@dimen/outpass_history_item_padding_top"
-            android:weightSum="3">
+            android:orientation="vertical"
+            android:layout_margin="@dimen/approve_deny_padding">
 
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:text="Date"
-                android:textSize="16sp" />
+                android:orientation="horizontal"
+                android:layout_margin="@dimen/approve_deny_padding"
+                android:weightSum="3">
 
-            <TextView
-                android:id="@+id/tv_oupass_history_date"
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:text="Date"
+                    android:textStyle="bold"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/tv_oupass_history_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textSize="16sp" />
-        </LinearLayout>
+                android:orientation="horizontal"
+                android:layout_margin="@dimen/approve_deny_padding"
+                android:weightSum="3">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingLeft="@dimen/outpass_history_item_padding_sides"
-            android:paddingRight="@dimen/outpass_history_item_padding_sides"
-            android:paddingTop="@dimen/outpass_history_item_padding_top"
-            android:weightSum="3">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:text="Time"
+                    android:textStyle="bold"
+                    android:textSize="16sp" />
 
-            <TextView
+                <TextView
+                    android:id="@+id/tv_oupass_history_time"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:text="Time"
-                android:textSize="16sp" />
+                android:orientation="horizontal"
+                android:layout_margin="@dimen/approve_deny_padding"
+                android:weightSum="3">
 
-            <TextView
-                android:id="@+id/tv_oupass_history_time"
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:text="Address"
+                    android:textStyle="bold"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/tv_oupass_history_address"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textSize="16sp" />
-        </LinearLayout>
+                android:orientation="horizontal"
+                android:layout_margin="@dimen/approve_deny_padding"
+                android:weightSum="3">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingLeft="@dimen/outpass_history_item_padding_sides"
-            android:paddingRight="@dimen/outpass_history_item_padding_sides"
-            android:paddingTop="@dimen/outpass_history_item_padding_top"
-            android:weightSum="3">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:text="Status"
+                    android:textStyle="bold"
+                    android:textSize="16sp" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:text="Address"
-                android:textSize="16sp" />
-
-            <TextView
-                android:id="@+id/tv_oupass_history_address"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textSize="16sp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingLeft="@dimen/outpass_history_item_padding_sides"
-            android:paddingRight="@dimen/outpass_history_item_padding_sides"
-            android:paddingTop="@dimen/outpass_history_item_padding_top"
-            android:weightSum="3">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:text="Status"
-                android:textSize="16sp" />
-
-            <TextView
-                android:id="@+id/tv_oupass_history_status"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textSize="16sp" />
+                <TextView
+                    android:id="@+id/tv_oupass_history_status"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="16sp" />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#E9E9E9" />
-
-
-</LinearLayout>
+</android.support.v7.widget.CardView>

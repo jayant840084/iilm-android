@@ -34,6 +34,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import studentConsole.StudentConsoleActivity;
 import utils.ActivityTracker;
+import utils.DeveloperInfo;
 import utils.ProgressBarUtil;
 import utils.UserInformation;
 
@@ -65,6 +66,12 @@ public class LoginActivity extends AppCompatActivity {
         mPasswordView = findViewById(R.id.etPassword);
         Button mSignInButton = findViewById(R.id.email_sign_in_button);
         mSignInButton.setOnClickListener(view -> attemptLogin());
+
+        Button forgotPasswordButton = findViewById(R.id.bt_login_forgot_password);
+        forgotPasswordButton.setOnClickListener(v -> forgotPassword());
+
+        new DeveloperInfo(this)
+                .visitDeveloperSite(findViewById(R.id.bt_login_dev_site));
     }
 
     /**
@@ -129,8 +136,12 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    private void forgotPassword() {
+        Toast.makeText(this, "Coming Soon", Toast.LENGTH_SHORT).show();
+    }
+
     private boolean isUIDValid(String uid) {
-        return uid.length() >= 4 && uid.length() <= 100;
+        return uid.length() >= 2 && uid.length() <= 100;
     }
 
     private boolean isPasswordValid(String password) {

@@ -26,10 +26,17 @@ final class SchemaOutPass {
             OutPassColumns.COLUMN_NAME_TIME_RETURN + " TEXT," +
             OutPassColumns.COLUMN_NAME_PHONE_NUMBER_VISITING + " TEXT," +
             OutPassColumns.COLUMN_NAME_REASON_VISIT + " TEXT," +
+            OutPassColumns.COLUMN_NAME_STUDENT_REMARK + " TEXT," +
             OutPassColumns.COLUMN_NAME_VISITING_ADDRESS + " TEXT," +
             OutPassColumns.COLUMN_NAME_WARDEN_SIGNED + " BOOLEAN null," +
+            OutPassColumns.COLUMN_NAME_WARDEN_REMARK + " TEXT," +
+            OutPassColumns.COLUMN_NAME_WARDEN_TALKED_TO_PARENT + " BOOLEAN null," +
             OutPassColumns.COLUMN_NAME_HOD_SIGNED + " BOOLEAN null," +
+            OutPassColumns.COLUMN_NAME_HOD_REMARK + " TEXT," +
+            OutPassColumns.COLUMN_NAME_HOD_TALKED_TO_PARENT + " BOOLEAN null," +
             OutPassColumns.COLUMN_NAME_DIRECTOR_SIGNED + " BOOLEAN null," +
+            OutPassColumns.COLUMN_NAME_DIRECTOR_REMARK + " TEXT," +
+            OutPassColumns.COLUMN_NAME_DIRECTOR_PRIORITY_SIGN + " BOOLEAN null," +
             OutPassColumns.COLUMN_OUT_PASS_TYPE + " TEXT" + ")";
 
     private SchemaOutPass() {
@@ -48,10 +55,17 @@ final class SchemaOutPass {
         static final String COLUMN_NAME_TIME_RETURN = "timeReturn";
         static final String COLUMN_NAME_PHONE_NUMBER_VISITING = "phoneNumberVisiting";
         static final String COLUMN_NAME_REASON_VISIT = "reasonVisit";
+        static final String COLUMN_NAME_STUDENT_REMARK = "studentRemark";
         static final String COLUMN_NAME_VISITING_ADDRESS = "visitingAddress";
         static final String COLUMN_NAME_WARDEN_SIGNED = "wardenSigned";
+        static final String COLUMN_NAME_WARDEN_REMARK = "wardenRemark";
+        static final String COLUMN_NAME_WARDEN_TALKED_TO_PARENT = "wardenTalkParent";
         static final String COLUMN_NAME_HOD_SIGNED = "hodSigned";
+        static final String COLUMN_NAME_HOD_REMARK = "hodRemark";
+        static final String COLUMN_NAME_HOD_TALKED_TO_PARENT = "hodTalkParent";
         static final String COLUMN_NAME_DIRECTOR_SIGNED = "directorSigned";
+        static final String COLUMN_NAME_DIRECTOR_REMARK = "directorRemark";
+        static final String COLUMN_NAME_DIRECTOR_PRIORITY_SIGN = "directorPrioritySign";
         static final String COLUMN_OUT_PASS_TYPE = "outPassType";
     }
 }

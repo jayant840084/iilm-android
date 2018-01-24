@@ -23,9 +23,16 @@ public class OutPassAttributes {
     public static final String ADDRESS = "visitingAddress";
     public static final String PHONE_NUMBER = "phoneNumber";
     public static final String REASON = "reasonVisit";
+    public static final String STUDENT_REMARK = "studentRemark";
     public static final String DIRECTOR_SIGNED = "directorSigned";
+    public static final String DIRECTOR_REMARK = "directorRemark";
+    public static final String DIRECTOR_PRIORITY_SIGN = "directorPrioritySign";
     public static final String HOD_SIGNED = "hodSigned";
+    public static final String HOD_REMARK = "hodRemark";
+    public static final String HOD_TALKED_TO_PARENT = "hodTalkParent";
     public static final String WARDEN_SIGNED = "wardenSigned";
+    public static final String WARDEN_REMARK = "wardenRemark";
+    public static final String WARDEN_TALKED_TO_PARENT = "wardenTalkParent";
     public static final String ALLOWED = "isAllowed";
     public static final String TIME_STAMP_LEAVE = "timestampLeave";
     public static final String TIME_STAMP_RETURN = "timestampReturn";

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright 2018,  Jayant Singh, All rights reserved.
   -->
 
@@ -53,6 +52,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
+        android:background="@color/bgColor"
         app:headerLayout="@layout/nav_header_console"
         app:menu="@menu/activity_console_drawer" />
 

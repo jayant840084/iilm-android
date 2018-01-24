@@ -1,11 +1,12 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright 2018,  Jayant Singh, All rights reserved.
   -->
 
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
+    <!--<color name="colorPrimary">#3F51B5</color>-->
+    <color name="colorPrimary">#351934</color>
+    <!--<color name="colorPrimaryDark">#303F9F</color>-->
+    <color name="colorPrimaryDark">#261125</color>
     <color name="colorAccent">#6200EA</color>
 
     <color name="loginBgColor">#F9F9F9</color>
@@ -15,6 +16,8 @@
     <color name="splashColor">#f9f9f9</color>
 
     <color name="buttonPressedColor">#d9d9d9</color>
+
+    <color name="textColor">#212121</color>
 
     <color name="allow">#4CAF50</color>
     <color name="deny">#F44336</color>

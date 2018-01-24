@@ -14,7 +14,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DbHelper extends SQLiteOpenHelper {
 
-    private static final int DB_VERSION = 1;
+    private static final int DB_VERSION = 6;
     private static final String DB_NAME = "outPass.db";
 
     public DbHelper(Context context) {
@@ -43,7 +43,7 @@ public class DbHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void dropAllTables(SQLiteDatabase db) {
+    private void dropAllTables(SQLiteDatabase db) {
         db.execSQL("DROP TABLE IF EXISTS " + SchemaOutPass.OutPassColumns.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + SchemaOutPassSigned.OutPassColumns.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + SchemaOutPassToSign.OutPassColumns.TABLE_NAME);

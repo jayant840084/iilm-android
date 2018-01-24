@@ -6,168 +6,217 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:mContext="studentConsole.layouts.RequestFragment">
 
-    <RelativeLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <Spinner
-                    android:id="@+id/outpass_spinner"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="16dp"
-                    android:paddingLeft="6dp"
-                    android:paddingStart="6dp"
-                    android:paddingTop="16dp"
-                    android:spinnerMode="dialog"
-                    android:textSize="16sp" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@drawable/separator_background" />
-
-                <EditText
-                    android:id="@+id/etReasonLeave"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/edit_text_background"
-                    android:hint="Reason for leave"
-                    android:inputType="textShortMessage"
-                    android:padding="16dp"
-                    android:textSize="16sp" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@drawable/separator_background" />
-
-                <EditText
-                    android:id="@+id/etPhoneNumber"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/edit_text_background"
-                    android:hint="Parent's Contact Number"
-                    android:inputType="phone"
-                    android:padding="16dp"
-                    android:textSize="16sp" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@drawable/separator_background" />
-
-                <EditText
-                    android:id="@+id/etVisitingAddress"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="16dp"
-                    android:background="@drawable/edit_text_background"
-                    android:hint="Address"
-                    android:inputType="textPostalAddress"
-                    android:textSize="16sp" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@drawable/separator_background" />
-
-                <Button
-                    android:id="@+id/btDateOfLeave"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start"
-                    android:background="@drawable/edit_text_background"
-                    android:hint="Leave Date"
-                    android:padding="16dp"
-                    android:textAlignment="textStart"
-                    android:textAllCaps="false"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                    android:textSize="16sp" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@drawable/separator_background" />
-
-                <Button
-                    android:id="@+id/btTimeOfLeave"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start"
-                    android:background="@drawable/edit_text_background"
-                    android:hint="Leave Time"
-                    android:padding="16dp"
-                    android:textAlignment="textStart"
-                    android:textAllCaps="false"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                    android:textSize="16sp" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@drawable/separator_background" />
-
-                <Button
-                    android:id="@+id/btDateOfReturn"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start"
-                    android:background="@drawable/edit_text_background"
-                    android:hint="Return Date"
-                    android:padding="16dp"
-                    android:textAlignment="textStart"
-                    android:textAllCaps="false"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                    android:textSize="16sp" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@drawable/separator_background" />
-
-                <Button
-                    android:id="@+id/btTimeOfReturn"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start"
-                    android:background="@drawable/edit_text_background"
-                    android:hint="Return Time"
-                    android:padding="16dp"
-                    android:textAlignment="textStart"
-                    android:textAllCaps="false"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                    android:textSize="16sp" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@drawable/separator_background" />
-            </LinearLayout>
-
-        </ScrollView>
-
-        <Button
-            android:id="@+id/btSubmit"
-            style="@style/Widget.AppCompat.Button.Borderless"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:background="@drawable/button_active_background"
-            android:text="Submit"
-            android:textColor="@android:color/white" />
-    </RelativeLayout>
+            android:orientation="vertical">
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/approve_deny_padding">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="4dp"
+                        android:background="@color/other"
+                        android:orientation="vertical" />
+
+                    <Spinner
+                        android:id="@+id/outpass_spinner"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="16dp"
+                        android:paddingLeft="6dp"
+                        android:paddingStart="6dp"
+                        android:paddingTop="16dp"
+                        android:spinnerMode="dialog"
+                        android:textSize="16sp" />
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/approve_deny_padding"
+                android:layout_marginRight="@dimen/approve_deny_padding"
+                android:layout_marginBottom="@dimen/approve_deny_padding">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@drawable/separator_background" />
+
+                    <EditText
+                        android:id="@+id/etReasonLeave"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/edit_text_background"
+                        android:hint="Reason for leave"
+                        android:inputType="textShortMessage"
+                        android:padding="16dp"
+                        android:textSize="16sp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@drawable/separator_background" />
+
+                    <EditText
+                        android:id="@+id/etPhoneNumber"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/edit_text_background"
+                        android:hint="Parent's Contact Number"
+                        android:inputType="phone"
+                        android:padding="16dp"
+                        android:textSize="16sp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@drawable/separator_background" />
+
+                    <EditText
+                        android:id="@+id/etVisitingAddress"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="16dp"
+                        android:background="@drawable/edit_text_background"
+                        android:hint="Address"
+                        android:inputType="textPostalAddress"
+                        android:textSize="16sp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@drawable/separator_background" />
+
+                    <Button
+                        android:id="@+id/btDateOfLeave"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start"
+                        android:background="@drawable/edit_text_background"
+                        android:hint="Leave Date"
+                        android:padding="16dp"
+                        android:textAlignment="textStart"
+                        android:textAllCaps="false"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                        android:textSize="16sp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@drawable/separator_background" />
+
+                    <Button
+                        android:id="@+id/btTimeOfLeave"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start"
+                        android:background="@drawable/edit_text_background"
+                        android:hint="Leave Time"
+                        android:padding="16dp"
+                        android:textAlignment="textStart"
+                        android:textAllCaps="false"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                        android:textSize="16sp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@drawable/separator_background" />
+
+                    <Button
+                        android:id="@+id/btDateOfReturn"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start"
+                        android:background="@drawable/edit_text_background"
+                        android:hint="Return Date"
+                        android:padding="16dp"
+                        android:textAlignment="textStart"
+                        android:textAllCaps="false"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                        android:textSize="16sp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@drawable/separator_background" />
+
+                    <Button
+                        android:id="@+id/btTimeOfReturn"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="start"
+                        android:background="@drawable/edit_text_background"
+                        android:hint="Return Time"
+                        android:padding="16dp"
+                        android:textAlignment="textStart"
+                        android:textAllCaps="false"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                        android:textSize="16sp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="@drawable/separator_background" />
+
+                    <EditText
+                        android:id="@+id/etStudentRemark"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/edit_text_background"
+                        android:inputType="textLongMessage"
+                        android:padding="16dp"
+                        android:textSize="16sp"
+                        android:hint="Remark, If any"/>
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/approve_deny_padding"
+                android:layout_marginRight="@dimen/approve_deny_padding"
+                android:layout_marginBottom="@dimen/approve_deny_padding">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <Button
+                        android:id="@+id/btSubmit"
+                        style="@style/Widget.AppCompat.Button.Borderless"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:background="@drawable/white_button_background"
+                        android:text="Submit"
+                        android:textColor="@color/allow" />
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
+        </LinearLayout>
+    </ScrollView>
 
     <LinearLayout
         android:id="@+id/outpass_request_progress_background"

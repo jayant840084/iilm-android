@@ -5,16 +5,13 @@
 package net.requests;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.widget.Toast;
 
 import net.ApiClient;
 import net.ApiInterface;
-import net.models.LogLeaveModel;
+import net.models.GuardLogModel;
 
-import constants.OutPassAttributes;
-import constants.OutPassType;
+import in.ac.iilm.iilm.R;
 import retrofit2.Call;
 import retrofit2.Response;
 import utils.UserInformation;
@@ -30,44 +27,26 @@ public class LogLeaveRequest {
 
         final String token = UserInformation.getString(context, UserInformation.StringKey.TOKEN);
 
-        Call<LogLeaveModel> call = apiInterface.putLogLeave(token, id);
+        Call<GuardLogModel> call = apiInterface.putLogLeave(token, id);
 
-        call.enqueue(new retrofit2.Callback<LogLeaveModel>() {
+        call.enqueue(new retrofit2.Callback<GuardLogModel>() {
             @Override
-            public void onResponse(Call<LogLeaveModel> call, Response<LogLeaveModel> response) {
+            public void onResponse(Call<GuardLogModel> call, Response<GuardLogModel> response) {
                 if (response.code() == 203) {
-                    Bundle bundle = new Bundle();
-                    bundle.putString(OutPassAttributes.NAME, response.body().getName());
-                    bundle.putString(OutPassAttributes.UID, response.body().getUid());
-                    bundle.putString(OutPassAttributes.TIME_STAMP_LEAVE, response.body().getTimeLeave());
-                    bundle.putString(OutPassAttributes.TIME_STAMP_RETURN, response.body().getTimeReturn());
-                    bundle.putString(OutPassAttributes.ADDRESS, response.body().getVisitingAddress());
-                    bundle.putString(OutPassAttributes.PHONE_NUMBER, response.body().getPhoneNumber());
-                    bundle.putString(OutPassAttributes.REASON, response.body().getReasonVisit());
-                    bundle.putString(OutPassAttributes.OUT_PASS_TYPE, response.body().getOutPassType());
-                    bundle.putBoolean(OutPassAttributes.ALLOWED, response.body().isAllowed());
-                    bundle.putString(OutPassAttributes.WARDEN_SIGNED, response.body().getWardenSigned().toString());
-                    if (response.body().getOutPassType().equals(OutPassType.NIGHT)) {
-                        bundle.putString(OutPassAttributes.DIRECTOR_SIGNED, response.body().getDirectorSigned().toString());
-                        bundle.putString(OutPassAttributes.HOD_SIGNED, response.body().getHodSigned().toString());
-                    }
-                    callback.status(true, bundle);
+                    callback.status(null, response.body());
                 } else if (response.code() == 600) {
-                    Toast.makeText(context, "Already out of campus", Toast.LENGTH_LONG).show();
-                    Bundle bundle = new Bundle();
-                    bundle.putBoolean(OutPassAttributes.ALLOWED, false);
-                    callback.status(true, bundle);
+                    callback.status("Pass has already been used", null);
                 }
             }
 
             @Override
-            public void onFailure(Call<LogLeaveModel> call, Throwable throwable) {
-                callback.status(false, null);
+            public void onFailure(Call<GuardLogModel> call, Throwable throwable) {
+                callback.status(null, null);
             }
         });
     }
 
     public interface Callback {
-        void status(boolean success, @Nullable Bundle passData);
+        void status(@Nullable String errMsg, @Nullable GuardLogModel guardLogModel);
     }
 }

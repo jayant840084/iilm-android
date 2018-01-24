@@ -65,8 +65,8 @@ public class StudentConsoleActivity extends AppCompatActivity
         TextView userName = header.findViewById(R.id.user_name);
         userName.setText(UserInformation.getString(this, UserInformation.StringKey.NAME));
 
-        TextView userUID = header.findViewById(R.id.user_email);
-        userUID.setText(UserInformation.getString(this, UserInformation.StringKey.EMAIL));
+        TextView userUID = header.findViewById(R.id.user_uid);
+        userUID.setText(UserInformation.getString(this, UserInformation.StringKey.UID));
 
         getSupportFragmentManager()
                 .beginTransaction()

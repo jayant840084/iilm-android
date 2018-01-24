@@ -4,7 +4,7 @@
 
 package net;
 
-import net.models.LogLeaveModel;
+import net.models.GuardLogModel;
 import net.models.LogReturnModel;
 import net.models.LoginModel;
 import net.models.OutPassModel;
@@ -102,7 +102,8 @@ public interface ApiInterface {
             @Field("returnTime") Long returnTime,
             @Field("phoneNumber") String phoneNumber,
             @Field("visitingAddress") String visitingAddress,
-            @Field("reasonVisit") String reasonVisit
+            @Field("reasonVisit") String reasonVisit,
+            @Field("remark") String studentRemark
     );
 
     @FormUrlEncoded
@@ -114,19 +115,32 @@ public interface ApiInterface {
 
     @FormUrlEncoded
     @PUT("sign")
-    Call<ResponseBody> putSignOutPass(
+    Call<ResponseBody> putSignDirector(
             @Header("token") String token,
             @Field("id") String id,
-            @Field("allowed") Boolean allowed
+            @Field("allowed") boolean allowed,
+            @Field("prioritySign") boolean priority,
+            @Field("remark") String remark
     );
 
     @FormUrlEncoded
     @PUT("sign")
-    Call<ResponseBody> putSignOutPassDirectorPriority(
+    Call<ResponseBody> putSignWarden(
             @Header("token") String token,
             @Field("id") String id,
-            @Field("allowed") Boolean allowed,
-            @Field("prioritySign") String prioritySign
+            @Field("allowed") boolean allowed,
+            @Field("talkedToParent") boolean talkedToParent,
+            @Field("remark") String remark
+    );
+
+    @FormUrlEncoded
+    @PUT("sign")
+    Call<ResponseBody> putSignHod(
+            @Header("token") String token,
+            @Field("id") String id,
+            @Field("allowed") boolean allowed,
+            @Field("talkedToParent") boolean talkedToParent,
+            @Field("remark") String remark
     );
 
     @FormUrlEncoded
@@ -138,14 +152,14 @@ public interface ApiInterface {
 
     @FormUrlEncoded
     @PUT("log-leave")
-    Call<LogLeaveModel> putLogLeave(
+    Call<GuardLogModel> putLogLeave(
             @Header("token") String token,
             @Field("id") String id
     );
 
     @FormUrlEncoded
     @PUT("log-return")
-    Call<LogReturnModel> putLogReturn(
+    Call<GuardLogModel> putLogReturn(
             @Header("token") String token,
             @Field("id") String id
     );

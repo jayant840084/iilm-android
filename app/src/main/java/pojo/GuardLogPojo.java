@@ -8,7 +8,7 @@ package pojo;
  * Created by jayan on 06-06-2017.
  */
 
-public class GuardLogLeavePOJO {
+public class GuardLogPojo {
 
     private String id;
     private String name;

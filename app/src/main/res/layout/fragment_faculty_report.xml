@@ -6,24 +6,28 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
+    android:background="@color/bgColor"
     tools:context="facultyConsole.layouts.ReportFragment">
 
-    <Spinner
-        android:id="@+id/report_spinner"
+    <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="16dp"
-        android:paddingLeft="6dp"
-        android:paddingStart="6dp"
-        android:paddingTop="16dp"
-        android:spinnerMode="dialog"
-        android:textSize="16sp" />
+        app:cardCornerRadius="0dp">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@drawable/separator_background" />
+        <Spinner
+            android:id="@+id/report_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="16dp"
+            android:paddingLeft="6dp"
+            android:paddingStart="6dp"
+            android:paddingTop="16dp"
+            android:spinnerMode="dialog"
+            android:textSize="16sp" />
+    </android.support.v7.widget.CardView>
+
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/srl_report"

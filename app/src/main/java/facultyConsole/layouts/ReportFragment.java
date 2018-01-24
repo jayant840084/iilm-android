@@ -13,7 +13,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,9 +28,10 @@ import net.requests.ReturnedTodayReportRequest;
 import net.requests.YetToReturnReportRequest;
 
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 
+import constants.OutPassSource;
+import constants.ReportTypes;
 import db.CrudLeavingToday;
 import db.CrudLeftToday;
 import db.CrudReturnedToday;
@@ -82,8 +82,6 @@ public class ReportFragment extends Fragment {
         mCrudLeftToday = new CrudLeftToday(getContext(), dbHelper);
         mCrudReturnedToday = new CrudReturnedToday(getContext(), dbHelper);
         mCrudYetToReturn = new CrudYetToReturn(getContext(), dbHelper);
-
-        mReportAdapter = new ReportAdapter(mCrudLeavingToday.getOutPasses());
     }
 
     @Override
@@ -93,12 +91,6 @@ public class ReportFragment extends Fragment {
 
         refreshLayout = view.findViewById(R.id.srl_report);
         refreshLayout.setOnRefreshListener(() -> getOutPasses(true));
-        RecyclerView mRecyclerView = view.findViewById(R.id.rv_report);
-
-        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        mRecyclerView.setLayoutManager(linearLayoutManager);
-
-        mRecyclerView.setAdapter(mReportAdapter);
 
         mSpinner = view.findViewById(R.id.report_spinner);
 
@@ -121,14 +113,25 @@ public class ReportFragment extends Fragment {
 
             }
         });
+        mReportAdapter = new ReportAdapter(mCrudLeavingToday.getOutPasses(), getCurrentSource());
 
+        RecyclerView mRecyclerView = view.findViewById(R.id.rv_report);
+        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
+        mRecyclerView.setLayoutManager(linearLayoutManager);
+        mRecyclerView.setAdapter(mReportAdapter);
         return view;
     }
 
     private void getOutPasses(boolean refresh) {
         // cancel all requests and then execute the new request
         if (refreshLayout.isRefreshing()) {
-            leavingTodayReportRequest.cancel();
+            /*
+             * Check for null before cancelling
+             */
+//            leavingTodayReportRequest.cancel();
+//            leftTodayReportRequest.cancel();
+//            returnedTodayReportRequest.cancel();
+//            leftTodayReportRequest.cancel();
         } else {
             refreshLayout.setRefreshing(true);
         }
@@ -150,7 +153,7 @@ public class ReportFragment extends Fragment {
 
     private void showLeavingToday(boolean refresh) {
         int offset, limit = 100;
-        mReportAdapter.updateData(mCrudLeavingToday.getOutPasses());
+        mReportAdapter.updateData(mCrudLeavingToday.getOutPasses(), getCurrentSource());
         if (refresh) offset = 0;
         else offset = mReportAdapter.getItemCount();
 
@@ -159,31 +162,31 @@ public class ReportFragment extends Fragment {
                 offset,
                 limit,
                 new LeavingTodayReportRequest.Callback() {
-            @Override
-            public void onResponse(Response<List<OutPassModel>> response) {
-                if (response != null) {
-                    if (offset == 0) {
-                        mCrudLeavingToday.deleteAllAndAdd(response.body(),
-                                outPasses -> updateData(outPasses));
-                    } else {
-                        mCrudLeavingToday.addOrUpdateOutPass(response.body(),
-                                outPasses -> updateData(outPasses));
+                    @Override
+                    public void onResponse(Response<List<OutPassModel>> response) {
+                        if (response != null) {
+                            if (offset == 0) {
+                                mCrudLeavingToday.deleteAllAndAdd(response.body(),
+                                        outPasses -> updateData(outPasses));
+                            } else {
+                                mCrudLeavingToday.addOrUpdateOutPass(response.body(),
+                                        outPasses -> updateData(outPasses));
+                            }
+                        }
                     }
-                }
-            }
 
-            @Override
-            public void onFailure() {
-                refreshLayout.setRefreshing(false);
-                if (getActivity() != null)
-                    Toast.makeText(getContext(), "Failed to update", Toast.LENGTH_SHORT).show();
-            }
-        });
+                    @Override
+                    public void onFailure() {
+                        refreshLayout.setRefreshing(false);
+                        if (getActivity() != null)
+                            Toast.makeText(getContext(), "Failed to update", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 
     private void showYetToReturn(boolean refresh) {
         int offset, limit = 100;
-        mReportAdapter.updateData(mCrudYetToReturn.getOutPasses());
+        mReportAdapter.updateData(mCrudYetToReturn.getOutPasses(), getCurrentSource());
         if (refresh) offset = 0;
         else offset = mReportAdapter.getItemCount();
 
@@ -195,10 +198,10 @@ public class ReportFragment extends Fragment {
                     public void onResponse(Response<List<OutPassModel>> response) {
                         if (response != null) {
                             if (offset == 0) {
-                                mCrudReturnedToday.deleteAllAndAdd(response.body(),
+                                mCrudYetToReturn.deleteAllAndAdd(response.body(),
                                         outPasses -> updateData(outPasses));
                             } else {
-                                mCrudReturnedToday.addOrUpdateOutPass(response.body(),
+                                mCrudYetToReturn.addOrUpdateOutPass(response.body(),
                                         outPasses -> updateData(outPasses));
                             }
                         }
@@ -215,7 +218,7 @@ public class ReportFragment extends Fragment {
 
     private void returnedToday(boolean refresh) {
         int offset, limit = 100;
-        mReportAdapter.updateData(mCrudReturnedToday.getOutPasses());
+        mReportAdapter.updateData(mCrudReturnedToday.getOutPasses(), getCurrentSource());
         if (refresh) offset = 0;
         else offset = mReportAdapter.getItemCount();
 
@@ -247,7 +250,7 @@ public class ReportFragment extends Fragment {
 
     private void leftToday(boolean refresh) {
         int offset, limit = 100;
-        mReportAdapter.updateData(mCrudLeftToday.getOutPasses());
+        mReportAdapter.updateData(mCrudLeftToday.getOutPasses(), getCurrentSource());
         if (refresh) offset = 0;
         else offset = mReportAdapter.getItemCount();
 
@@ -259,10 +262,10 @@ public class ReportFragment extends Fragment {
                     public void onResponse(Response<List<OutPassModel>> response) {
                         if (response != null) {
                             if (offset == 0) {
-                                mCrudReturnedToday.deleteAllAndAdd(response.body(),
+                                mCrudLeftToday.deleteAllAndAdd(response.body(),
                                         outPasses -> updateData(outPasses));
                             } else {
-                                mCrudReturnedToday.addOrUpdateOutPass(response.body(),
+                                mCrudLeftToday.addOrUpdateOutPass(response.body(),
                                         outPasses -> updateData(outPasses));
                             }
                         }
@@ -281,16 +284,25 @@ public class ReportFragment extends Fragment {
         Activity activity = getActivity();
         if (activity != null) {
             getActivity().runOnUiThread(() -> {
-                mReportAdapter.updateData(outPasses);
+                mReportAdapter.updateData(outPasses, getCurrentSource());
                 refreshLayout.setRefreshing(false);
             });
         }
     }
 
-    private static final class ReportTypes {
-        static final String LEAVING_TODAY = "Leaving Today";
-        static final String YET_TO_RETURN = "Yet To Return";
-        static final String RETURNED_TODAY = "Returned Today";
-        static final String LEFT_TODAY = "Left Today";
+    private int getCurrentSource() {
+        switch (mSpinner.getSelectedItem().toString()) {
+            case ReportTypes.LEAVING_TODAY:
+                return OutPassSource.LEAVING_TODAY;
+            case ReportTypes.LEFT_TODAY:
+                return OutPassSource.LEFT_TODAY;
+            case ReportTypes.RETURNED_TODAY:
+                return OutPassSource.RETURNED_TODAY;
+            case ReportTypes.YET_TO_RETURN:
+                return OutPassSource.YET_TO_RETURN;
+            default:
+                Toast.makeText(getContext(), "Invalid selection", Toast.LENGTH_SHORT).show();
+                return 0;
+        }
     }
 }

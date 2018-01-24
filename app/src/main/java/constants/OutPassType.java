@@ -10,7 +10,7 @@ package constants;
 
 public class OutPassType {
 
-    public static final String DAY_NOT_COLLEGE_HOURS = "Day Out Pass"; // (Not College Hours)
+    public static final String DAY = "Day Out Pass"; // (Not College Hours)
     public static final String DAY_COLLEGE_HOURS = "Day Out Pass(College Hours)";
     public static final String NIGHT = "Night Out Pass";
 }

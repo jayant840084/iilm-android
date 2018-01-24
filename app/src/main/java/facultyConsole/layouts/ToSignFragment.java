@@ -37,7 +37,7 @@ import utils.UserInformation;
 public class ToSignFragment extends Fragment {
 
     private static final ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-    private static final int limit = 100;
+    private static final int limit = 500;
     private static DbHelper dbHelper;
     private static Call<List<OutPassModel>> call;
     private static boolean lastCallFinished = true;
@@ -66,7 +66,7 @@ public class ToSignFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_faculty_to_sign, container, false);
 
         recyclerView = view.findViewById(R.id.rv_console);
-        adapter = new ToSignAdapter(crud.getOutPassesToSign());
+        adapter = new ToSignAdapter(getContext(), crud.getOutPassesToSign());
 
         recyclerView.setAdapter(adapter);
 
@@ -147,6 +147,7 @@ public class ToSignFragment extends Fragment {
                     Activity activity = getActivity();
                     if (activity != null)
                         Toast.makeText(getContext(), "Failed to update", Toast.LENGTH_SHORT).show();
+                    refreshLayout.setRefreshing(false);
                     lastCallFinished = true;
                 }
             });

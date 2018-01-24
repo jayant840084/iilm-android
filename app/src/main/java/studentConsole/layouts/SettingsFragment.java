@@ -26,6 +26,7 @@ import auth.ChangePasswordActivity;
 import auth.LoginActivity;
 import in.ac.iilm.iilm.R;
 import jp.wasabeef.picasso.transformations.CropCircleTransformation;
+import utils.DeveloperInfo;
 import utils.ProgressBarUtil;
 import utils.UserInformation;
 
@@ -96,10 +97,9 @@ public class SettingsFragment extends Fragment {
             }
         });
 
-        Button developerInfo = view.findViewById(R.id.bt_settings_dev_site);
-        developerInfo.setOnClickListener(v ->
-                startActivity(new Intent(Intent.ACTION_VIEW,
-                        Uri.parse("https://jayantsingh.in"))));
+        new DeveloperInfo(getContext())
+                .visitDeveloperSite(view.findViewById(R.id.bt_settings_dev_site));
+
 
         Button changePassword = view.findViewById(R.id.bt_change_password);
         changePassword.setOnClickListener(v ->

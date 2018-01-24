@@ -117,6 +117,7 @@ public class HistoryFragment extends Fragment {
                             if (getActivity() != null) {
                                 Toast.makeText(getContext(), "Failed to update", Toast.LENGTH_SHORT).show();
                             }
+                            refreshLayout.setRefreshing(false);
                             lastCallFinished = true;
                         }
                     }
