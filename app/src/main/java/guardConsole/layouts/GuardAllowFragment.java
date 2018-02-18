@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 import net.MyPicasso;
 import net.UrlGenerator;
-import net.models.GuardLogModel;
+import models.GuardLogModel;
 
 import in.ac.iilm.iilm.R;
 import jp.wasabeef.picasso.transformations.CropCircleTransformation;

@@ -18,12 +18,18 @@ import android.widget.Toast;
 
 import net.ApiClient;
 import net.ApiInterface;
-import net.models.OutPassModel;
+
+import db.FacultyToSignPasses;
+import io.realm.OrderedCollectionChangeSet;
+import io.realm.OrderedRealmCollectionChangeListener;
+import io.realm.Realm;
+import io.realm.RealmResults;
+import models.OutPassModel;
 
 import java.util.List;
 
-import db.CrudOutPassToSign;
-import db.DbHelper;
+import javax.annotation.Nullable;
+
 import facultyConsole.adapters.ToSignAdapter;
 import in.ac.iilm.iilm.R;
 import retrofit2.Call;
@@ -38,14 +44,14 @@ public class ToSignFragment extends Fragment {
 
     private static final ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
     private static final int limit = 500;
-    private static DbHelper dbHelper;
-    private static Call<List<OutPassModel>> call;
+    private static Call<List<FacultyToSignPasses>> call;
     private static boolean lastCallFinished = true;
     private static int offset = 0;
     private RecyclerView recyclerView;
     private ToSignAdapter adapter;
     private SwipeRefreshLayout refreshLayout;
-    private CrudOutPassToSign crud;
+    private RealmResults<FacultyToSignPasses> facultyToSignPasses;
+    private Realm realm = Realm.getDefaultInstance();
 
 
     public ToSignFragment() {
@@ -55,8 +61,9 @@ public class ToSignFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        dbHelper = new DbHelper(getContext());
-        crud = new CrudOutPassToSign(getContext(), dbHelper);
+        facultyToSignPasses = realm.where(FacultyToSignPasses.class).findAllAsync();
+        facultyToSignPasses.addChangeListener((facultyToSignPasses, changeSet) -> adapter.notifyDataSetChanged());
+        adapter = new ToSignAdapter(getContext(), facultyToSignPasses);
     }
 
     @Override
@@ -66,8 +73,6 @@ public class ToSignFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_faculty_to_sign, container, false);
 
         recyclerView = view.findViewById(R.id.rv_console);
-        adapter = new ToSignAdapter(getContext(), crud.getOutPassesToSign());
-
         recyclerView.setAdapter(adapter);
 
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
@@ -114,56 +119,47 @@ public class ToSignFragment extends Fragment {
 
             lastCallFinished = false;
 
-            call.enqueue(new Callback<List<OutPassModel>>() {
+            call.enqueue(new Callback<List<FacultyToSignPasses>>() {
                 @Override
-                public void onResponse(Call<List<OutPassModel>> call, Response<List<OutPassModel>> response) {
-                    if (offset == 0) {
-                        crud.deleteAllAndAdd(response.body(), outpasses -> {
-                            Activity activity = getActivity();
-                            if (activity != null) {
-                                getActivity().runOnUiThread(() -> {
-                                    adapter.updateDataSet(outpasses);
-                                    refreshLayout.setRefreshing(false);
-                                    lastCallFinished = true;
-                                });
-                            }
-                        });
-                    } else {
-                        crud.addOrUpdateOutPass(response.body(), outpasses -> {
-                            Activity activity = getActivity();
-                            if (activity != null) {
-                                getActivity().runOnUiThread(() -> {
-                                    adapter.updateDataSet(outpasses);
-                                    refreshLayout.setRefreshing(false);
-                                    lastCallFinished = true;
-                                });
-                            }
-                        });
-                    }
+                public void onResponse(Call<List<FacultyToSignPasses>> call, Response<List<FacultyToSignPasses>> response) {
+                    realm.executeTransactionAsync(realm -> {
+                        if (offset == 0) {
+                            realm.where(FacultyToSignPasses.class).findAll().deleteAllFromRealm();
+                        }
+                        realm.copyToRealm(response.body());
+                        finishCall();
+                    });
                 }
 
                 @Override
-                public void onFailure(Call<List<OutPassModel>> call, Throwable t) {
-                    Activity activity = getActivity();
-                    if (activity != null)
+                public void onFailure(Call<List<FacultyToSignPasses>> call, Throwable t) {
+                    finishCall();
+                    if (getActivity() != null)
                         Toast.makeText(getContext(), "Failed to update", Toast.LENGTH_SHORT).show();
-                    refreshLayout.setRefreshing(false);
-                    lastCallFinished = true;
                 }
+            });
+        }
+    }
+
+    private void finishCall() {
+        Activity activity = getActivity();
+        if (activity != null) {
+            activity.runOnUiThread(() -> {
+                refreshLayout.setRefreshing(false);
+                lastCallFinished = true;
             });
         }
     }
 
     @Override
     public void onDestroy() {
-        dbHelper.close();
         call.cancel();
         super.onDestroy();
     }
 
     @Override
     public void onResume() {
-        getOutpasses(false);
+        getOutpasses(true);
         super.onResume();
     }
 }

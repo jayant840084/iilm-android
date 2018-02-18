@@ -4,7 +4,7 @@
 
 package utils;
 
-import net.models.GuardLogModel;
+import models.GuardLogModel;
 
 /**
  * Created by Jayant Singh on 22/1/18.

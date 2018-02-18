@@ -15,6 +15,7 @@ import net.requests.ChangePasswordRequest;
 import net.requests.LogoutRequest;
 
 import in.ac.iilm.iilm.R;
+import in.ac.iilm.iilm.SplashActivity;
 import utils.ProgressBarUtil;
 
 public class ChangePasswordActivity extends AppCompatActivity {
@@ -49,6 +50,11 @@ public class ChangePasswordActivity extends AppCompatActivity {
                 changePassword();
             }
         });
+    }
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(this, SplashActivity.class));
+        finish();
     }
 
     private boolean isFormValid() {
@@ -90,7 +96,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
                         new LogoutRequest().execute(this, success -> {
                             if (success) {
                                 startActivity(new Intent(this,
-                                        LoginActivity.class));
+                                        SplashActivity.class));
                                 finish();
                             }
                         });

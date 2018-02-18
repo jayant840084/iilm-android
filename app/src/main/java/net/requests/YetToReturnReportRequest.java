@@ -8,7 +8,9 @@ import android.content.Context;
 
 import net.ApiClient;
 import net.ApiInterface;
-import net.models.OutPassModel;
+
+import db.ReportYetToReturn;
+import models.OutPassModel;
 
 import java.util.List;
 
@@ -22,7 +24,7 @@ import utils.UserInformation;
 
 public class YetToReturnReportRequest {
 
-    private Call<List<OutPassModel>> call;
+    private Call<List<ReportYetToReturn>> call;
 
     public void execute(
             final Context context,
@@ -37,14 +39,14 @@ public class YetToReturnReportRequest {
                 limit
         );
 
-        call.enqueue(new retrofit2.Callback<List<OutPassModel>>() {
+        call.enqueue(new retrofit2.Callback<List<ReportYetToReturn>>() {
             @Override
-            public void onResponse(Call<List<OutPassModel>> call, Response<List<OutPassModel>> response) {
+            public void onResponse(Call<List<ReportYetToReturn>> call, Response<List<ReportYetToReturn>> response) {
                 callback.onResponse(response);
             }
 
             @Override
-            public void onFailure(Call<List<OutPassModel>> call, Throwable t) {
+            public void onFailure(Call<List<ReportYetToReturn>> call, Throwable t) {
                 callback.onFailure();
             }
         });
@@ -55,7 +57,7 @@ public class YetToReturnReportRequest {
     }
 
     public interface Callback {
-        void onResponse(Response<List<OutPassModel>> response);
+        void onResponse(Response<List<ReportYetToReturn>> response);
 
         void onFailure();
     }

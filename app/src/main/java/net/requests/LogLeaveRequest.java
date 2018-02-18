@@ -9,9 +9,8 @@ import android.support.annotation.Nullable;
 
 import net.ApiClient;
 import net.ApiInterface;
-import net.models.GuardLogModel;
+import models.GuardLogModel;
 
-import in.ac.iilm.iilm.R;
 import retrofit2.Call;
 import retrofit2.Response;
 import utils.UserInformation;

@@ -10,7 +10,6 @@ package net;
 
 public class UrlGenerator {
 
-//    private static final String BASE_URL = "http://192.168.43.100:3000/outpass/v1/";
 //   private static final String BASE_URL = "http://192.168.1.12:3000/outpass/v1/";
    private static final String BASE_URL = "https://api.iilmcet.com/outpass/v1/";
 

@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,31 +18,37 @@ import android.widget.Toast;
 
 import net.ApiClient;
 import net.ApiInterface;
-import net.models.OutPassModel;
+
+import db.StudentHistory;
+import io.realm.OrderedCollectionChangeSet;
+import io.realm.OrderedRealmCollectionChangeListener;
+import io.realm.Realm;
+import io.realm.RealmQuery;
+import io.realm.RealmResults;
+import models.OutPassModel;
 
 import java.util.List;
 
-import db.CrudOutPass;
-import db.DbHelper;
+import javax.annotation.Nullable;
+
 import in.ac.iilm.iilm.R;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import studentConsole.adapters.HistoryAdapter;
-import utils.ActivityTracker;
 import utils.UserInformation;
 
 public class HistoryFragment extends Fragment {
 
     private static final ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
     private static final int limit = 100;
-    private static Call<List<OutPassModel>> call;
+    private static Call<List<StudentHistory>> call;
     private static boolean lastCallFinished = true;
     private static int offset = 0;
     private HistoryAdapter adapter;
     private SwipeRefreshLayout refreshLayout;
-    private CrudOutPass crud;
-    private DbHelper dbHelper;
+    private Realm realm = Realm.getDefaultInstance();
+    private RealmResults<StudentHistory> studentHistoryRealmResults;
 
     public HistoryFragment() {
         // Required empty public constructor
@@ -50,8 +57,10 @@ public class HistoryFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        dbHelper = new DbHelper(getContext());
-        crud = new CrudOutPass(getContext(), dbHelper);
+        studentHistoryRealmResults = realm.where(StudentHistory.class).findAllAsync();
+        adapter = new HistoryAdapter(studentHistoryRealmResults);
+        studentHistoryRealmResults.addChangeListener((studentHistories, changeSet)
+                -> adapter.updateDataSet(studentHistories));
     }
 
     @Override
@@ -60,7 +69,6 @@ public class HistoryFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_student_history, container, false);
 
         RecyclerView recyclerView = view.findViewById(R.id.rv_history);
-        adapter = new HistoryAdapter(crud.getOutPasses());
         recyclerView.setAdapter(adapter);
 
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
@@ -99,42 +107,35 @@ public class HistoryFragment extends Fragment {
 
             lastCallFinished = false;
 
-            call.enqueue(new Callback<List<OutPassModel>>() {
+            call.enqueue(new Callback<List<StudentHistory>>() {
                 @Override
-                public void onResponse(Call<List<OutPassModel>> call,
-                                       Response<List<OutPassModel>> response) {
-                    if (offset == 0) {
-                        crud.deleteAllAndAdd(response.body(), outPasses -> {
-                            Activity activity = getActivity();
-                            if (activity != null) {
-                                activity.runOnUiThread(() -> {
-                                    adapter.updateDataSet(outPasses);
-                                    refreshLayout.setRefreshing(false);
-                                    lastCallFinished = true;
-                                });
-                            }
-                        });
-                    } else {
-                        crud.addOrUpdateOutPass(response.body(), outPasses -> {
-                            Activity activity = getActivity();
-                            if (activity != null) {
-                                getActivity().runOnUiThread(() -> {
-                                    adapter.updateDataSet(outPasses);
-                                    refreshLayout.setRefreshing(false);
-                                    lastCallFinished = true;
-                                });
-                            }
-                        });
-                    }
+                public void onResponse(Call<List<StudentHistory>> call,
+                                       Response<List<StudentHistory>> response) {
+                    realm.executeTransactionAsync(realm -> {
+                        if (offset == 0) {
+                            realm.where(StudentHistory.class).findAll().deleteAllFromRealm();
+                        }
+                        realm.copyToRealm(response.body());
+                        finishCall();
+                    });
                 }
 
                 @Override
-                public void onFailure(Call<List<OutPassModel>> call, Throwable t) {
-                    if (ActivityTracker.isActivityRunning() && refreshLayout.isRefreshing())
+                public void onFailure(Call<List<StudentHistory>> call, Throwable t) {
+                    if (getContext() != null && refreshLayout.isRefreshing())
                         Toast.makeText(getContext(), "Failed to update", Toast.LENGTH_SHORT).show();
-                    refreshLayout.setRefreshing(false);
-                    lastCallFinished = true;
+                    finishCall();
                 }
+            });
+        }
+    }
+
+    private void finishCall() {
+        Activity activity = getActivity();
+        if (activity != null) {
+            activity.runOnUiThread(() -> {
+                refreshLayout.setRefreshing(false);
+                lastCallFinished = true;
             });
         }
     }
@@ -148,7 +149,6 @@ public class HistoryFragment extends Fragment {
 
     @Override
     public void onDestroy() {
-        dbHelper.close();
         call.cancel();
         super.onDestroy();
     }

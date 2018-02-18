@@ -16,15 +16,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import net.models.OutPassModel;
 import net.requests.GetSignedPassesRequest;
 
 import java.util.List;
 
-import db.CrudOutPassSigned;
-import db.DbHelper;
+import db.FacultySignedPasses;
 import facultyConsole.adapters.HistoryAdapter;
 import in.ac.iilm.iilm.R;
+import io.realm.Realm;
+import io.realm.RealmResults;
+import models.OutPassModel;
 import utils.UserInformation;
 
 /**
@@ -37,8 +38,9 @@ public class HistoryFragment extends Fragment {
     private static int offset = 0;
     private HistoryAdapter adapter;
     private SwipeRefreshLayout refreshLayout;
-    private CrudOutPassSigned crud;
-    private DbHelper dbHelper;
+    private Realm realm = Realm.getDefaultInstance();
+    private RealmResults<FacultySignedPasses> facultySignedPasses;
+    private LinearLayoutManager linearLayoutManager;
     private GetSignedPassesRequest request;
 
     public HistoryFragment() {
@@ -48,9 +50,13 @@ public class HistoryFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        linearLayoutManager = new LinearLayoutManager(getContext());
         request = new GetSignedPassesRequest();
-        dbHelper = new DbHelper(getContext());
-        crud = new CrudOutPassSigned(getContext(), dbHelper);
+        facultySignedPasses = realm.where(FacultySignedPasses.class).findAllAsync();
+        adapter = new HistoryAdapter(getContext(), facultySignedPasses,
+                UserInformation.getString(getContext(), UserInformation.StringKey.SCOPE));
+        facultySignedPasses.addChangeListener((facultySignedPasses, changeSet)
+                -> adapter.notifyDataSetChanged());
     }
 
     @Override
@@ -61,18 +67,8 @@ public class HistoryFragment extends Fragment {
                 container,
                 false);
         RecyclerView recyclerView = view.findViewById(R.id.rv_history);
-        adapter = new HistoryAdapter(
-                getContext(),
-                crud.getOutPassesSigned(),
-                UserInformation.getString(
-                        getContext(),
-                        UserInformation.StringKey.SCOPE));
         recyclerView.setAdapter(adapter);
-
-        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(
-                getContext());
-        recyclerView.setLayoutManager(linearLayoutManager);
-
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
@@ -102,38 +98,31 @@ public class HistoryFragment extends Fragment {
             if (refresh) offset = 0;
             else offset = adapter.getItemCount();
 
-            request.execute(
-                    getContext(),
-                    offset,
-                    limit,
-                    (response) -> {
+            request.execute(getContext(), offset, limit, (response) -> {
                         if (response != null) {
-                            if (offset == 0) {
-                                crud.deleteAllAndAdd(response.body(), this::updateData);
-                            } else {
-                                crud.addOrUpdateOutPass(response.body(), this::updateData);
-                            }
+                            realm.executeTransactionAsync(realm -> {
+                                if (offset == 0) {
+                                    realm.where(FacultySignedPasses.class).findAll().deleteAllFromRealm();
+                                }
+                                realm.copyToRealm(response.body());
+                                finishCall();
+                            });
                         } else {
                             if (getActivity() != null) {
                                 Toast.makeText(getContext(), "Failed to update", Toast.LENGTH_SHORT).show();
+                                finishCall();
                             }
-                            refreshLayout.setRefreshing(false);
-                            lastCallFinished = true;
                         }
                     }
             );
-
             lastCallFinished = false;
-
-
         }
     }
 
-    private void updateData(List<OutPassModel> outPasses) {
+    private void finishCall() {
         Activity activity = getActivity();
         if (activity != null) {
-            getActivity().runOnUiThread(() -> {
-                adapter.updateDataSet(outPasses);
+            activity.runOnUiThread(() -> {
                 refreshLayout.setRefreshing(false);
                 lastCallFinished = true;
             });
@@ -149,14 +138,13 @@ public class HistoryFragment extends Fragment {
 
     @Override
     public void onDestroy() {
-        dbHelper.close();
         request.cancel();
         super.onDestroy();
     }
 
     @Override
     public void onResume() {
-        getOutPasses(false);
+        getOutPasses(true);
         super.onResume();
     }
 }

@@ -21,7 +21,16 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import net.models.OutPassModel;
+import db.ReportLeavingToday;
+import db.ReportLeftToday;
+import db.ReportReturnedToday;
+import db.ReportYetToReturn;
+import db.StudentHistory;
+import io.realm.OrderedCollectionChangeSet;
+import io.realm.OrderedRealmCollectionChangeListener;
+import io.realm.Realm;
+import io.realm.RealmResults;
+import models.OutPassModel;
 import net.requests.LeavingTodayReportRequest;
 import net.requests.LeftTodayReportRequest;
 import net.requests.ReturnedTodayReportRequest;
@@ -32,11 +41,6 @@ import java.util.List;
 
 import constants.OutPassSource;
 import constants.ReportTypes;
-import db.CrudLeavingToday;
-import db.CrudLeftToday;
-import db.CrudReturnedToday;
-import db.CrudYetToReturn;
-import db.DbHelper;
 import facultyConsole.adapters.ReportAdapter;
 import in.ac.iilm.iilm.R;
 import retrofit2.Response;
@@ -53,10 +57,6 @@ public class ReportFragment extends Fragment {
 
     private SwipeRefreshLayout refreshLayout;
     private Spinner mSpinner;
-    private CrudLeavingToday mCrudLeavingToday;
-    private CrudLeftToday mCrudLeftToday;
-    private CrudReturnedToday mCrudReturnedToday;
-    private CrudYetToReturn mCrudYetToReturn;
 
     private ReportAdapter mReportAdapter;
 
@@ -65,6 +65,13 @@ public class ReportFragment extends Fragment {
     private YetToReturnReportRequest yetToReturnReportRequest;
     private LeftTodayReportRequest leftTodayReportRequest;
 
+    private RealmResults<ReportLeavingToday> reportLeavingToday;
+    private RealmResults<ReportReturnedToday> reportReturnedToday;
+    private RealmResults<ReportYetToReturn> reportYetToReturn;
+    private RealmResults<ReportLeftToday> reportLeftToday;
+
+    private Realm realm = Realm.getDefaultInstance();
+
     public ReportFragment() {
         // Required empty public constructor
     }
@@ -72,16 +79,34 @@ public class ReportFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        DbHelper dbHelper = new DbHelper(getContext());
         leavingTodayReportRequest = new LeavingTodayReportRequest();
         returnedTodayReportRequest = new ReturnedTodayReportRequest();
         yetToReturnReportRequest = new YetToReturnReportRequest();
         leftTodayReportRequest = new LeftTodayReportRequest();
 
-        mCrudLeavingToday = new CrudLeavingToday(getContext(), dbHelper);
-        mCrudLeftToday = new CrudLeftToday(getContext(), dbHelper);
-        mCrudReturnedToday = new CrudReturnedToday(getContext(), dbHelper);
-        mCrudYetToReturn = new CrudYetToReturn(getContext(), dbHelper);
+        reportLeavingToday = realm.where(ReportLeavingToday.class).findAllAsync();
+        reportLeavingToday.addChangeListener((reportLeavingTodays, changeSet) -> {
+            if (mReportAdapter.getCurrentSource() == OutPassSource.LEAVING_TODAY)
+                mReportAdapter.notifyDataSetChanged();
+        });
+
+        reportReturnedToday = realm.where(ReportReturnedToday.class).findAllAsync();
+        reportReturnedToday.addChangeListener((reportReturnedTodays, changeSet) -> {
+            if (mReportAdapter.getCurrentSource() == OutPassSource.RETURNED_TODAY)
+                mReportAdapter.notifyDataSetChanged();
+        });
+
+        reportYetToReturn = realm.where(ReportYetToReturn.class).findAllAsync();
+        reportYetToReturn.addChangeListener((yetToReturns, changeSet) -> {
+            if (mReportAdapter.getCurrentSource() == OutPassSource.YET_TO_RETURN)
+                mReportAdapter.notifyDataSetChanged();
+        });
+
+        reportLeftToday = realm.where(ReportLeftToday.class).findAllAsync();
+        reportLeftToday.addChangeListener((reportLeftTodays, changeSet) -> {
+            if (mReportAdapter.getCurrentSource() == OutPassSource.LEFT_TODAY)
+                mReportAdapter.notifyDataSetChanged();
+        });
     }
 
     @Override
@@ -105,6 +130,7 @@ public class ReportFragment extends Fragment {
         mSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                mReportAdapter.changeSource(getCurrentSource());
                 getOutPasses(true);
             }
 
@@ -113,7 +139,12 @@ public class ReportFragment extends Fragment {
 
             }
         });
-        mReportAdapter = new ReportAdapter(mCrudLeavingToday.getOutPasses(), getCurrentSource());
+
+        mReportAdapter = new ReportAdapter(reportLeavingToday,
+                reportReturnedToday,
+                reportYetToReturn,
+                reportLeftToday,
+                getCurrentSource());
 
         RecyclerView mRecyclerView = view.findViewById(R.id.rv_report);
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
@@ -153,9 +184,8 @@ public class ReportFragment extends Fragment {
 
     private void showLeavingToday(boolean refresh) {
         int offset, limit = 100;
-        mReportAdapter.updateData(mCrudLeavingToday.getOutPasses(), getCurrentSource());
         if (refresh) offset = 0;
-        else offset = mReportAdapter.getItemCount();
+        else offset = reportLeavingToday.size();
 
         leavingTodayReportRequest.execute(
                 getContext(),
@@ -163,21 +193,21 @@ public class ReportFragment extends Fragment {
                 limit,
                 new LeavingTodayReportRequest.Callback() {
                     @Override
-                    public void onResponse(Response<List<OutPassModel>> response) {
+                    public void onResponse(Response<List<ReportLeavingToday>> response) {
                         if (response != null) {
-                            if (offset == 0) {
-                                mCrudLeavingToday.deleteAllAndAdd(response.body(),
-                                        outPasses -> updateData(outPasses));
-                            } else {
-                                mCrudLeavingToday.addOrUpdateOutPass(response.body(),
-                                        outPasses -> updateData(outPasses));
-                            }
+                            realm.executeTransactionAsync(realm -> {
+                                if (offset == 0) {
+                                    realm.where(ReportLeavingToday.class).findAll().deleteAllFromRealm();
+                                }
+                                realm.copyToRealm(response.body());
+                                finishCall();
+                            });
                         }
                     }
 
                     @Override
                     public void onFailure() {
-                        refreshLayout.setRefreshing(false);
+                        finishCall();
                         if (getActivity() != null)
                             Toast.makeText(getContext(), "Failed to update", Toast.LENGTH_SHORT).show();
                     }
@@ -186,30 +216,29 @@ public class ReportFragment extends Fragment {
 
     private void showYetToReturn(boolean refresh) {
         int offset, limit = 100;
-        mReportAdapter.updateData(mCrudYetToReturn.getOutPasses(), getCurrentSource());
         if (refresh) offset = 0;
-        else offset = mReportAdapter.getItemCount();
+        else offset = reportYetToReturn.size();
 
         yetToReturnReportRequest.execute(getContext(),
                 offset,
                 limit,
                 new YetToReturnReportRequest.Callback() {
                     @Override
-                    public void onResponse(Response<List<OutPassModel>> response) {
+                    public void onResponse(Response<List<ReportYetToReturn>> response) {
                         if (response != null) {
-                            if (offset == 0) {
-                                mCrudYetToReturn.deleteAllAndAdd(response.body(),
-                                        outPasses -> updateData(outPasses));
-                            } else {
-                                mCrudYetToReturn.addOrUpdateOutPass(response.body(),
-                                        outPasses -> updateData(outPasses));
-                            }
+                            realm.executeTransactionAsync(realm -> {
+                                if (offset == 0) {
+                                    realm.where(ReportYetToReturn.class).findAll().deleteAllFromRealm();
+                                }
+                                realm.copyToRealm(response.body());
+                                finishCall();
+                            });
                         }
                     }
 
                     @Override
                     public void onFailure() {
-                        refreshLayout.setRefreshing(false);
+                        finishCall();
                         if (getActivity() != null)
                             Toast.makeText(getContext(), "Failed to update", Toast.LENGTH_SHORT).show();
                     }
@@ -218,30 +247,29 @@ public class ReportFragment extends Fragment {
 
     private void returnedToday(boolean refresh) {
         int offset, limit = 100;
-        mReportAdapter.updateData(mCrudReturnedToday.getOutPasses(), getCurrentSource());
         if (refresh) offset = 0;
-        else offset = mReportAdapter.getItemCount();
+        else offset = reportReturnedToday.size();
 
         returnedTodayReportRequest.execute(getContext(),
                 offset,
                 limit,
                 new ReturnedTodayReportRequest.Callback() {
                     @Override
-                    public void onResponse(Response<List<OutPassModel>> response) {
+                    public void onResponse(Response<List<ReportReturnedToday>> response) {
                         if (response != null) {
-                            if (offset == 0) {
-                                mCrudReturnedToday.deleteAllAndAdd(response.body(),
-                                        outPasses -> updateData(outPasses));
-                            } else {
-                                mCrudReturnedToday.addOrUpdateOutPass(response.body(),
-                                        outPasses -> updateData(outPasses));
-                            }
+                            realm.executeTransactionAsync(realm -> {
+                                if (offset == 0) {
+                                    realm.where(ReportReturnedToday.class).findAll().deleteAllFromRealm();
+                                }
+                                realm.copyToRealm(response.body());
+                                finishCall();
+                            });
                         }
                     }
 
                     @Override
                     public void onFailure() {
-                        refreshLayout.setRefreshing(false);
+                        finishCall();
                         if (getActivity() != null)
                             Toast.makeText(getContext(), "Failed to update", Toast.LENGTH_SHORT).show();
                     }
@@ -250,41 +278,39 @@ public class ReportFragment extends Fragment {
 
     private void leftToday(boolean refresh) {
         int offset, limit = 100;
-        mReportAdapter.updateData(mCrudLeftToday.getOutPasses(), getCurrentSource());
         if (refresh) offset = 0;
-        else offset = mReportAdapter.getItemCount();
+        else offset = reportLeftToday.size();
 
         leftTodayReportRequest.execute(getContext(),
                 offset,
                 limit,
                 new LeftTodayReportRequest.Callback() {
                     @Override
-                    public void onResponse(Response<List<OutPassModel>> response) {
+                    public void onResponse(Response<List<ReportLeftToday>> response) {
                         if (response != null) {
-                            if (offset == 0) {
-                                mCrudLeftToday.deleteAllAndAdd(response.body(),
-                                        outPasses -> updateData(outPasses));
-                            } else {
-                                mCrudLeftToday.addOrUpdateOutPass(response.body(),
-                                        outPasses -> updateData(outPasses));
-                            }
+                            realm.executeTransactionAsync(realm -> {
+                                if (offset == 0) {
+                                    realm.where(ReportLeftToday.class).findAll().deleteAllFromRealm();
+                                }
+                                realm.copyToRealm(response.body());
+                                finishCall();
+                            });
                         }
                     }
 
                     @Override
                     public void onFailure() {
-                        refreshLayout.setRefreshing(false);
+                        finishCall();
                         if (getActivity() != null)
                             Toast.makeText(getContext(), "Failed to update", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
 
-    private void updateData(List<OutPassModel> outPasses) {
+    private void finishCall() {
         Activity activity = getActivity();
         if (activity != null) {
-            getActivity().runOnUiThread(() -> {
-                mReportAdapter.updateData(outPasses, getCurrentSource());
+            activity.runOnUiThread(() -> {
                 refreshLayout.setRefreshing(false);
             });
         }

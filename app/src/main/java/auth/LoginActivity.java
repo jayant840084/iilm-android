@@ -21,10 +21,11 @@ import com.google.firebase.iid.FirebaseInstanceId;
 
 import net.ApiClient;
 import net.ApiInterface;
-import net.models.LoginModel;
-import net.models.UserModel;
+import models.LoginModel;
+import models.UserModel;
 import net.requests.AddFirebaseTokenRequest;
 import net.requests.LogoutRequest;
+import net.requests.ResetPasswordRequest;
 
 import facultyConsole.FacultyConsoleActivity;
 import guardConsole.GuardConsoleActivity;
@@ -137,7 +138,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void forgotPassword() {
-        Toast.makeText(this, "Coming Soon", Toast.LENGTH_SHORT).show();
+        startActivity(new Intent(this, ForgotPasswordActivity.class));
+        finish();
     }
 
     private boolean isUIDValid(String uid) {

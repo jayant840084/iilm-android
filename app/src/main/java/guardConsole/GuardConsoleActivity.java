@@ -20,7 +20,7 @@ import com.google.gson.Gson;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
-import net.models.GuardLogModel;
+import models.GuardLogModel;
 import net.requests.LogLeaveRequest;
 import net.requests.LogReturnRequest;
 import net.requests.LogoutRequest;
@@ -30,7 +30,6 @@ import guardConsole.layouts.GuardDenyFragment;
 import guardConsole.layouts.GuardAllowFragment;
 import in.ac.iilm.iilm.R;
 import pojo.GuardLogPojo;
-import pojo.GuardLogReturnPOJO;
 import utils.GuardPassHelper;
 import utils.ProgressBarUtil;
 

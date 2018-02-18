@@ -14,14 +14,14 @@ import net.UrlGenerator;
 
 import java.io.IOException;
 
-import db.CrudLeavingToday;
-import db.CrudLeftToday;
-import db.CrudOutPass;
-import db.CrudOutPassSigned;
-import db.CrudOutPassToSign;
-import db.CrudReturnedToday;
-import db.CrudYetToReturn;
-import db.DbHelper;
+import db.FacultySignedPasses;
+import db.FacultyToSignPasses;
+import db.ReportLeavingToday;
+import db.ReportLeftToday;
+import db.ReportReturnedToday;
+import db.ReportYetToReturn;
+import db.StudentHistory;
+import io.realm.Realm;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Response;
@@ -85,13 +85,15 @@ public class LogoutRequest {
         UserInformation.putString(context, UserInformation.StringKey.ROOM_NUMBER, "");
         UserInformation.putString(context, UserInformation.StringKey.SCOPE, "");
         UserInformation.putString(context, UserInformation.StringKey.TOKEN, "");
-        new CrudLeavingToday(context, new DbHelper(context)).deleteOutPasses();
-        new CrudLeftToday(context, new DbHelper(context)).deleteOutPasses();
-        new CrudOutPass(context, new DbHelper(context)).deleteOutPasses();
-        new CrudOutPassSigned(context, new DbHelper(context)).deleteOutPasses();
-        new CrudOutPassToSign(context, new DbHelper(context)).deleteOutPasses();
-        new CrudReturnedToday(context, new DbHelper(context)).deleteOutPasses();
-        new CrudYetToReturn(context, new DbHelper(context)).deleteOutPasses();
+        Realm.getDefaultInstance().executeTransaction(realm -> {
+            Realm.getDefaultInstance().where(FacultySignedPasses.class).findAll().deleteAllFromRealm();
+            Realm.getDefaultInstance().where(FacultyToSignPasses.class).findAll().deleteAllFromRealm();
+            Realm.getDefaultInstance().where(ReportLeavingToday.class).findAll().deleteAllFromRealm();
+            Realm.getDefaultInstance().where(ReportLeftToday.class).findAll().deleteAllFromRealm();
+            Realm.getDefaultInstance().where(ReportReturnedToday.class).findAll().deleteAllFromRealm();
+            Realm.getDefaultInstance().where(ReportYetToReturn.class).findAll().deleteAllFromRealm();
+            Realm.getDefaultInstance().where(StudentHistory.class).findAll().deleteAllFromRealm();
+        });
         MyPicasso.with(context).invalidate(UrlGenerator.getUrl("profile-img"));
     }
 

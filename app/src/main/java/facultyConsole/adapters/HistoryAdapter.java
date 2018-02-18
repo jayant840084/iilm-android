@@ -15,7 +15,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import net.models.OutPassModel;
+import db.FacultySignedPasses;
+import io.realm.RealmResults;
+import models.OutPassModel;
 
 import java.util.List;
 
@@ -37,10 +39,10 @@ import utils.ToDateTime;
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHolder> {
 
     private Context mContext;
-    private List<OutPassModel> mOutPassList;
+    private RealmResults<FacultySignedPasses> mOutPassList;
     private String mScope;
 
-    public HistoryAdapter(Context context, List<OutPassModel> outPassList, String scope) {
+    public HistoryAdapter(Context context, RealmResults<FacultySignedPasses> outPassList, String scope) {
         this.mContext = context;
         this.mOutPassList = outPassList;
         this.mScope = scope;
@@ -81,13 +83,6 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         return mOutPassList.size();
     }
 
-    public void updateDataSet(List<OutPassModel> outPasses) {
-        this.mOutPassList.clear();
-        this.notifyDataSetChanged();
-        this.mOutPassList.addAll(outPasses);
-        this.notifyDataSetChanged();
-    }
-
     private void setMessage(boolean signed, ViewHolder holder) {
         if (signed) {
             setAllowed(holder);
@@ -120,7 +115,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
                         R.color.deny));
     }
 
-    private Boolean getDirectorSigned(OutPassModel outPass) {
+    private Boolean getDirectorSigned(FacultySignedPasses outPass) {
         if (outPass.getDirectorPrioritySign() != null &&
                 outPass.getDirectorPrioritySign()) {
             return outPass.getDirectorPrioritySign();
@@ -136,7 +131,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         TextView time;
         TextView status;
         LinearLayout stateIndicator;
-        OutPassModel outPass;
+        FacultySignedPasses outPass;
 
         ViewHolder(final View itemView) {
             super(itemView);

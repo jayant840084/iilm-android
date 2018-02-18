@@ -8,8 +8,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -21,18 +19,11 @@ import net.ApiClient;
 import net.ApiInterface;
 import net.MyPicasso;
 import net.UrlGenerator;
-import net.models.OutPassModel;
+import models.OutPassModel;
 
 import constants.OutPassAttributes;
 import constants.OutPassSource;
 import constants.UserRoles;
-import db.CrudLeavingToday;
-import db.CrudLeftToday;
-import db.CrudOutPassSigned;
-import db.CrudOutPassToSign;
-import db.CrudReturnedToday;
-import db.CrudYetToReturn;
-import db.DbHelper;
 import in.ac.iilm.iilm.R;
 import jp.wasabeef.picasso.transformations.CropCircleTransformation;
 import okhttp3.ResponseBody;
@@ -61,36 +52,13 @@ public class NightPassResponseActivity extends AppCompatActivity {
                 findViewById(R.id.login_progress_background),
                 findViewById(R.id.approve_deny_progress));
 
-        final DbHelper dbHelper = new DbHelper(this);
+        final PassHelper passHelper = new PassHelper(this);
 
         final Bundle extras = getIntent().getExtras();
 
-        switch (extras.getInt(OutPassSource.LABEL)) {
-            case OutPassSource.OUT_PASS_SIGNED:
-                final CrudOutPassSigned crudOutPassSigned = new CrudOutPassSigned(this, dbHelper);
-                outPass = crudOutPassSigned.getOutPass(extras.getString(OutPassAttributes.ID));
-                break;
-            case OutPassSource.OUT_PASS_TO_SIGN:
-                final CrudOutPassToSign crudOutPassToSign = new CrudOutPassToSign(this, dbHelper);
-                outPass = crudOutPassToSign.getOutPass(extras.getString(OutPassAttributes.ID));
-                break;
-            case OutPassSource.LEAVING_TODAY:
-                final CrudLeavingToday crudLeavingToday = new CrudLeavingToday(this, dbHelper);
-                outPass = crudLeavingToday.getOutPass(extras.getString(OutPassAttributes.ID));
-                break;
-            case OutPassSource.LEFT_TODAY:
-                final CrudLeftToday crudLeftToday = new CrudLeftToday(this, dbHelper);
-                outPass = crudLeftToday.getOutPass(extras.getString(OutPassAttributes.ID));
-                break;
-            case OutPassSource.RETURNED_TODAY:
-                final CrudReturnedToday crudReturnedToday = new CrudReturnedToday(this, dbHelper);
-                outPass = crudReturnedToday.getOutPass(extras.getString(OutPassAttributes.ID));
-                break;
-            case OutPassSource.YET_TO_RETURN:
-                final CrudYetToReturn crudYetToReturn = new CrudYetToReturn(this, dbHelper);
-                outPass = crudYetToReturn.getOutPass(extras.getString(OutPassAttributes.ID));
-                break;
-        }
+        outPass = passHelper.getOutPassFromDb(
+                extras.getInt(OutPassSource.LABEL),
+                extras.getString(OutPassAttributes.ID));
 
         getSupportActionBar().setTitle(outPass.getOutPassType());
 
@@ -103,8 +71,9 @@ public class NightPassResponseActivity extends AppCompatActivity {
 
         MyPicasso.with(this)
                 .load(UrlGenerator.getUrlProfilePic(outPass.getUid()))
-                .placeholder(R.color.bgColor)
                 .error(R.drawable.profile_placeholder)
+                .resize(256, 256)
+                .centerCrop()
                 .transform(new CropCircleTransformation())
                 .into(ivProfile);
 
@@ -157,7 +126,6 @@ public class NightPassResponseActivity extends AppCompatActivity {
                 startActivity(new Intent(Intent.ACTION_CALL)
                         .setData(Uri.parse("tel:" + phoneNumber.getText()))));
 
-        PassHelper passHelper = new PassHelper(this);
         passHelper.setStatus(outPass.getWardenSigned(), findViewById(R.id.tv_approve_warden_response));
         passHelper.setStatus(outPass.getHodSigned(), findViewById(R.id.tv_approve_hod_response));
         passHelper.setStatus(outPass.getDirectorSigned(), findViewById(R.id.tv_approve_director_response));

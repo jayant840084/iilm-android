@@ -8,7 +8,9 @@ import android.content.Context;
 
 import net.ApiClient;
 import net.ApiInterface;
-import net.models.OutPassModel;
+
+import db.ReportReturnedToday;
+import models.OutPassModel;
 
 import java.util.List;
 
@@ -22,7 +24,7 @@ import utils.UserInformation;
 
 public class ReturnedTodayReportRequest {
 
-    private Call<List<OutPassModel>> call;
+    private Call<List<ReportReturnedToday>> call;
 
     public void execute(
             final Context context,
@@ -37,14 +39,14 @@ public class ReturnedTodayReportRequest {
                 limit
         );
 
-        call.enqueue(new retrofit2.Callback<List<OutPassModel>>() {
+        call.enqueue(new retrofit2.Callback<List<ReportReturnedToday>>() {
             @Override
-            public void onResponse(Call<List<OutPassModel>> call, Response<List<OutPassModel>> response) {
+            public void onResponse(Call<List<ReportReturnedToday>> call, Response<List<ReportReturnedToday>> response) {
                 callback.onResponse(response);
             }
 
             @Override
-            public void onFailure(Call<List<OutPassModel>> call, Throwable t) {
+            public void onFailure(Call<List<ReportReturnedToday>> call, Throwable t) {
                 callback.onFailure();
             }
         });
@@ -55,7 +57,7 @@ public class ReturnedTodayReportRequest {
     }
 
     public interface Callback {
-        void onResponse(Response<List<OutPassModel>> response);
+        void onResponse(Response<List<ReportReturnedToday>> response);
 
         void onFailure();
     }

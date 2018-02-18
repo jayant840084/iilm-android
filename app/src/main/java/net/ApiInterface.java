@@ -4,11 +4,18 @@
 
 package net;
 
-import net.models.GuardLogModel;
-import net.models.LogReturnModel;
-import net.models.LoginModel;
-import net.models.OutPassModel;
-import net.models.UserModel;
+import db.FacultySignedPasses;
+import db.FacultyToSignPasses;
+import db.ReportLeavingToday;
+import db.ReportLeftToday;
+import db.ReportReturnedToday;
+import db.ReportYetToReturn;
+import db.StudentHistory;
+import io.realm.RealmResults;
+import models.GuardLogModel;
+import models.LoginModel;
+import models.OutPassModel;
+import models.UserModel;
 
 import java.util.List;
 
@@ -40,14 +47,14 @@ public interface ApiInterface {
     );
 
     @GET("outpass")
-    Call<List<OutPassModel>> getOutPasses(
+    Call<List<StudentHistory>> getOutPasses(
             @Header("token") String token,
             @Query("offset") int offset,
             @Query("limit") int limit
     );
 
     @GET("outpass")
-    Call<List<OutPassModel>> getOutPassesSigned(
+    Call<List<FacultySignedPasses>> getOutPassesSigned(
             @Header("token") String token,
             @Query("onlySigned") boolean signed,
             @Query("offset") int offset,
@@ -55,7 +62,7 @@ public interface ApiInterface {
     );
 
     @GET("outpass")
-    Call<List<OutPassModel>> getOutPassesUnsigned(
+    Call<List<FacultyToSignPasses>> getOutPassesUnsigned(
             @Header("token") String token,
             @Query("onlyUnsigned") boolean unsigned,
             @Query("offset") int offset,
@@ -63,28 +70,28 @@ public interface ApiInterface {
     );
 
     @GET("report/leaving-today")
-    Call<List<OutPassModel>> getStudentsLeavingToday(
+    Call<List<ReportLeavingToday>> getStudentsLeavingToday(
             @Header("token") String token,
             @Query("offset") int offset,
             @Query("limit") int limit
     );
 
     @GET("report/returned-today")
-    Call<List<OutPassModel>> getStudentsReturnedToday(
+    Call<List<ReportReturnedToday>> getStudentsReturnedToday(
             @Header("token") String token,
             @Query("offset") int offset,
             @Query("limit") int limit
     );
 
     @GET("report/left-today")
-    Call<List<OutPassModel>> getStudentsLeftToday(
+    Call<List<ReportLeftToday>> getStudentsLeftToday(
             @Header("token") String token,
             @Query("offset") int offset,
             @Query("limit") int limit
     );
 
     @GET("report/yet-to-return")
-    Call<List<OutPassModel>> getStudentsYetToReturn(
+    Call<List<ReportYetToReturn>> getStudentsYetToReturn(
             @Header("token") String token,
             @Query("offset") int offset,
             @Query("limit") int limit
@@ -111,6 +118,12 @@ public interface ApiInterface {
     Call<ResponseBody> putLogout(
             @Header("token") String token,
             @Field("token") String firebaseToken
+    );
+
+    @FormUrlEncoded
+    @PUT("auth/reset-password")
+    Call<UserModel> putResetPassword(
+            @Field("uid") String uid
     );
 
     @FormUrlEncoded

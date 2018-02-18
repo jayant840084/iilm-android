@@ -4,23 +4,12 @@
 
 package studentConsole;
 
-import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.Point;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.gson.GsonBuilder;
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.MultiFormatWriter;
-import com.google.zxing.WriterException;
-import com.google.zxing.common.BitMatrix;
-
-import net.models.OutPassModel;
+import models.OutPassModel;
 
 import constants.OutPassAttributes;
 import constants.OutPassSource;
@@ -50,17 +39,17 @@ public class NightPassViewActivity extends AppCompatActivity {
 
         // only generate the qr code if the out pass has been confirmed
         if (extras.getBoolean(OutPassSource.SHOW_QR)) {
-            if (outPass.getDirectorPrioritySign() != null) {
-                if (outPass.getDirectorPrioritySign()) {
-                    GuardLogPojo guardLogPojo = new GuardLogPojo();
-                    guardLogPojo.setId(outPass.getId());
-                    guardLogPojo.setName(outPass.getName());
+            Log.wtf("RRRRRR", outPass.getDirectorPrioritySign() + "");
+            if (outPass.getDirectorPrioritySign() != null &&
+                    outPass.getDirectorPrioritySign()) {
+                GuardLogPojo guardLogPojo = new GuardLogPojo();
+                guardLogPojo.setId(outPass.getId());
+                guardLogPojo.setName(outPass.getName());
 
-                    new QrHelper(this).generateAndSetQr(
-                            findViewById(R.id.iv_QRCode),
-                            guardLogPojo
-                    );
-                }
+                new QrHelper(this).generateAndSetQr(
+                        findViewById(R.id.iv_QRCode),
+                        guardLogPojo
+                );
             } else if (outPass.getWardenSigned() != null &&
                     outPass.getHodSigned() != null &&
                     outPass.getDirectorSigned() != null) {

@@ -5,6 +5,7 @@
 package facultyConsole.layouts;
 
 
+import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
@@ -99,9 +100,10 @@ public class SettingsFragment extends Fragment {
                         Uri.parse("https://jayantsingh.in"))));
 
         Button changePassword = view.findViewById(R.id.bt_change_password);
-        changePassword.setOnClickListener(v ->
-                startActivity(new Intent(getContext(),
-                        ChangePasswordActivity.class)));
+        changePassword.setOnClickListener(v -> {
+            startActivity(new Intent(getContext(), ChangePasswordActivity.class));
+            getActivity().finish();
+        });
 
         Button button = view.findViewById(R.id.btConsoleLogout);
         button.setOnClickListener(v -> {

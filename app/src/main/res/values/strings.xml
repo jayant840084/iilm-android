@@ -31,6 +31,10 @@
     <string name="title_activity_approve_deny">ApproveDenyActivity</string>
     <string name="title_activity_outpass_view">OutpassViewActivity</string>
 
+    <!-- Strings related to reset password -->
+    <string name="reset">Reset</string>
+    <string name="reset_password">Reset Password</string>
+
     <string-array name="day_night_spinner">
         <item>Day Out Pass</item>
         <item>Night Out Pass</item>
@@ -47,8 +51,8 @@
     <string name="scope">SCOPE</string>
     <string name="gender">GENDER</string>
     <string name="email">EMAIL</string>
-    <string name="room">ROOM NUMBER</string>
-    <string name="phone_number">PHONE NUMBER</string>
+    <string name="room">ROOM</string>
+    <string name="phone_number">PHONE</string>
     <string name="feedback">FEEDBACK</string>
     <string name="change_password">CHANGE PASSWORD</string>
 

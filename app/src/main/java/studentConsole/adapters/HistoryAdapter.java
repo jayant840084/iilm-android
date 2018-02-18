@@ -7,7 +7,6 @@ package studentConsole.adapters;
 import android.content.Intent;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +14,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import net.models.OutPassModel;
+import db.StudentHistory;
+import io.realm.RealmResults;
+import models.OutPassModel;
 
 import java.util.List;
 
@@ -34,9 +35,9 @@ import utils.ToDateTime;
 
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHolder> {
 
-    private List<OutPassModel> outPassList;
+    private RealmResults<StudentHistory> outPassList;
 
-    public HistoryAdapter(List<OutPassModel> outPassList) {
+    public HistoryAdapter(RealmResults<StudentHistory> outPassList) {
         this.outPassList = outPassList;
     }
 
@@ -48,7 +49,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        OutPassModel outPass = outPassList.get(position);
+        StudentHistory outPass = outPassList.get(position);
 
         ToDateTime dateTimeLeave = new ToDateTime(Long.parseLong(outPass.getTimeLeave()));
 
@@ -69,16 +70,13 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
                 }
                 break;
             case OutPassType.DAY_COLLEGE_HOURS:
-                if (outPass.getHodSigned() != null &&
-                        !outPass.getHodSigned()) {
-                    setDenied(holder);
-                } else if (outPass.getWardenSigned() != null &&
-                        !outPass.getWardenSigned()) {
-                    setDenied(holder);
-                } else if (outPass.getHodSigned() != null &&
-                        outPass.getWardenSigned() != null) {
-                    setAllow(holder);
-                } else {
+                try {
+                    if (outPass.getHodSigned()) {
+                        setAllow(holder);
+                    } else {
+                        setDenied(holder);
+                    }
+                } catch (NullPointerException e) {
                     setWaiting(holder);
                 }
                 break;
@@ -108,6 +106,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         holder.outPassResponseData = outPassList.get(position);
     }
 
+
     private void setAllow(ViewHolder holder) {
         holder.allowed.setText("ALLOWED");
         holder.allowed.setTextColor(ContextCompat.getColor(holder.itemView.getContext(), R.color.allow));
@@ -131,7 +130,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         return outPassList.size();
     }
 
-    public void updateDataSet(List<OutPassModel> outPasses) {
+    public void updateDataSet(RealmResults<StudentHistory> outPasses) {
         outPassList = outPasses;
         this.notifyDataSetChanged();
     }
@@ -143,7 +142,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHold
         TextView time;
         TextView allowed;
         LinearLayout stateIndicator;
-        OutPassModel outPassResponseData;
+        StudentHistory outPassResponseData;
 
         ViewHolder(final View itemView) {
             super(itemView);

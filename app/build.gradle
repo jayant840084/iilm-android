@@ -14,6 +14,8 @@ buildscript {
 
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
+apply plugin: 'realm-android'
+
 
 repositories {
     maven { url 'https://maven.fabric.io/public' }
@@ -32,8 +34,8 @@ android {
         minSdkVersion 14
         targetSdkVersion 27
         multiDexEnabled true
-        versionCode 15
-        versionName "1.14"
+        versionCode 16
+        versionName "1.15"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -53,9 +55,6 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
-        transitive = true
-    }
     compile 'com.google.zxing:core:3.3.0'
     compile 'com.google.zxing:android-integration:3.3.0'
     compile 'com.android.support:appcompat-v7:27.0.2'
@@ -75,7 +74,7 @@ dependencies {
     compile 'com.android.support:cardview-v7:27.0.2'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     testCompile 'junit:junit:4.12'
-    compile('com.crashlytics.sdk.android:crashlytics-ndk:1.1.6@aar') {
+    compile('com.crashlytics.sdk.android:crashlytics:2.8.0@aar') {
         transitive = true
     }
 }

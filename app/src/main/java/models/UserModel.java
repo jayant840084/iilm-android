@@ -2,43 +2,56 @@
  * Copyright 2018,  Jayant Singh, All rights reserved.
  */
 
-package net.models;
+package models;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import constants.UserAttributes;
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by jayan on 19-11-2016.
  */
 
-public class UserModel {
+public class UserModel extends RealmObject {
 
+    @PrimaryKey
     @SerializedName(UserAttributes.UID)
+    @Expose
     private String uid;
 
     @SerializedName(UserAttributes.NAME)
+    @Expose
     private String name;
 
     @SerializedName(UserAttributes.EMAIL)
+    @Expose
     private String email;
 
     @SerializedName(UserAttributes.SCOPE)
+    @Expose
     private String scope;
 
     @SerializedName(UserAttributes.GENDER)
+    @Expose
     private String gender;
 
     @SerializedName(UserAttributes.PHONE_NUMBER)
+    @Expose
     private String phoneNumber;
 
     @SerializedName(UserAttributes.BRANCH)
+    @Expose
     private String branch;
 
     @SerializedName(UserAttributes.YEAR)
+    @Expose
     private String year;
 
     @SerializedName(UserAttributes.ROOM_NUMBER)
+    @Expose
     private String roomNumber;
 
     public String getUid() {

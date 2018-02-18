@@ -22,14 +22,11 @@ import net.ApiClient;
 import net.ApiInterface;
 import net.MyPicasso;
 import net.UrlGenerator;
-import net.models.OutPassModel;
+import models.OutPassModel;
 
 import constants.OutPassAttributes;
 import constants.OutPassSource;
 import constants.UserRoles;
-import db.CrudOutPassSigned;
-import db.CrudOutPassToSign;
-import db.DbHelper;
 import in.ac.iilm.iilm.R;
 import jp.wasabeef.picasso.transformations.CropCircleTransformation;
 import okhttp3.ResponseBody;
@@ -81,8 +78,9 @@ public class DayPassResponseActivity extends AppCompatActivity {
 
         MyPicasso.with(this)
                 .load(UrlGenerator.getUrlProfilePic(outPass.getUid()))
-                .placeholder(R.color.bgColor)
                 .error(R.drawable.profile_placeholder)
+                .resize(256, 256)
+                .centerCrop()
                 .transform(new CropCircleTransformation())
                 .into(ivProfile);
 

@@ -39,7 +39,7 @@ public class QrHelper {
             Point point = new Point();
             ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE))
                     .getDefaultDisplay().getSize(point);
-            int widthX = point.x / 2;
+            int widthX = point.x;
 
             bitMatrix = new MultiFormatWriter().encode(
                     new GsonBuilder().create().toJson(guardLogPojo),

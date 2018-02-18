@@ -9,7 +9,10 @@ import android.support.annotation.Nullable;
 
 import net.ApiClient;
 import net.ApiInterface;
-import net.models.OutPassModel;
+
+import db.FacultySignedPasses;
+import io.realm.RealmResults;
+import models.OutPassModel;
 
 import java.util.List;
 
@@ -23,7 +26,7 @@ import utils.UserInformation;
 
 public class GetSignedPassesRequest {
 
-    private Call<List<OutPassModel>> call;
+    private Call<List<FacultySignedPasses>> call;
 
     public void execute(
             final Context context,
@@ -40,14 +43,14 @@ public class GetSignedPassesRequest {
                 limit
         );
 
-        call.enqueue(new retrofit2.Callback<List<OutPassModel>>() {
+        call.enqueue(new retrofit2.Callback<List<FacultySignedPasses>>() {
             @Override
-            public void onResponse(Call<List<OutPassModel>> call, Response<List<OutPassModel>> response) {
+            public void onResponse(Call<List<FacultySignedPasses>> call, Response<List<FacultySignedPasses>> response) {
                 callback.onResponse(response);
             }
 
             @Override
-            public void onFailure(Call<List<OutPassModel>> call, Throwable t) {
+            public void onFailure(Call<List<FacultySignedPasses>> call, Throwable t) {
                 callback.onResponse(null);
             }
         });
@@ -59,6 +62,6 @@ public class GetSignedPassesRequest {
     }
 
     public interface Callback {
-        void onResponse(@Nullable Response<List<OutPassModel>> response);
+        void onResponse(@Nullable Response<List<FacultySignedPasses>> response);
     }
 }

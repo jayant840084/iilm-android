@@ -62,6 +62,19 @@
         <activity
             android:name="auth.ChangePasswordActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name="auth.ForgotPasswordActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name="studentConsole.DayCollegeHoursPassViewActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="facultyConsole.DayWorkingPassResponseActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="facultyConsole.NightPassResponseActivity"
+            android:screenOrientation="portrait" />
 
         <service
             android:name="firebase.MyFirebaseMessagingService"
@@ -77,11 +90,6 @@
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
-
-        <activity android:name="auth.ForgotPasswordActivity" />
-        <activity android:name="studentConsole.DayCollegeHoursPassViewActivity" />
-        <activity android:name="facultyConsole.DayWorkingPassResponseActivity" />
-        <activity android:name="facultyConsole.NightPassResponseActivity"></activity>
     </application>
 
 </manifest>

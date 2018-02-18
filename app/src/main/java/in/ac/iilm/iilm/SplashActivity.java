@@ -18,7 +18,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
-import com.crashlytics.android.ndk.CrashlyticsNdk;
 
 import net.ApiClient;
 import net.requests.CheckUpdateRequest;
@@ -28,6 +27,8 @@ import auth.LoginActivity;
 import facultyConsole.FacultyConsoleActivity;
 import guardConsole.GuardConsoleActivity;
 import io.fabric.sdk.android.Fabric;
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
 import studentConsole.StudentConsoleActivity;
 import utils.UserInformation;
 
@@ -39,7 +40,11 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Fabric.with(this, new Crashlytics(), new CrashlyticsNdk());
+        Fabric.with(this, new Crashlytics());
+        Realm.init(this);
+        Realm.setDefaultConfiguration(new RealmConfiguration.Builder()
+                .deleteRealmIfMigrationNeeded()
+                .build());
         ApiClient.with(this);
         setContentView(R.layout.activity_splash);
 
@@ -76,7 +81,6 @@ public class SplashActivity extends AppCompatActivity {
                     .getPackageInfo(this.getPackageName(), 0)
                     .versionCode) {
                 versionAndUpdate.setText(this.getString(R.string.update_message));
-                versionAndUpdate.setVisibility(View.VISIBLE);
             } else {
                 if (permissionsAvailable) {
                     continueSplash();

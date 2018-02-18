@@ -5,7 +5,9 @@
 package studentConsole.layouts;
 
 
+import android.app.Activity;
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -26,6 +28,7 @@ import auth.ChangePasswordActivity;
 import auth.LoginActivity;
 import in.ac.iilm.iilm.R;
 import jp.wasabeef.picasso.transformations.CropCircleTransformation;
+import studentConsole.StudentConsoleActivity;
 import utils.DeveloperInfo;
 import utils.ProgressBarUtil;
 import utils.UserInformation;
@@ -40,7 +43,6 @@ public class SettingsFragment extends Fragment {
     public SettingsFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -80,6 +82,9 @@ public class SettingsFragment extends Fragment {
         TextView phoneNumber = view.findViewById(R.id.tv_settings_phone_number);
         phoneNumber.setText(UserInformation.getString(getContext(), UserInformation.StringKey.PHONE_NUMBER));
 
+        TextView email = view.findViewById(R.id.tv_settings_email);
+        email.setText(UserInformation.getString(getContext(), UserInformation.StringKey.EMAIL));
+
         TextView gender = view.findViewById(R.id.tv_settings_gender);
         gender.setText(UserInformation.getString(getContext(), UserInformation.StringKey.GENDER));
 
@@ -102,9 +107,10 @@ public class SettingsFragment extends Fragment {
 
 
         Button changePassword = view.findViewById(R.id.bt_change_password);
-        changePassword.setOnClickListener(v ->
-                startActivity(new Intent(getContext(),
-                        ChangePasswordActivity.class)));
+        changePassword.setOnClickListener(v ->{
+            startActivity(new Intent(getContext(), ChangePasswordActivity.class));
+            getActivity().finish();
+        });
 
         Button button = view.findViewById(R.id.btLogout);
         button.setOnClickListener(view1 -> {

@@ -8,9 +8,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.TextView;
 
-import com.google.gson.GsonBuilder;
-
-import net.models.OutPassModel;
+import models.OutPassModel;
 
 import constants.OutPassAttributes;
 import constants.OutPassSource;

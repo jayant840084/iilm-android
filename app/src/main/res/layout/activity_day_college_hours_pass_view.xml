@@ -298,62 +298,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
-                        android:text="Warden"
-                        android:textSize="@dimen/approve_deny_text_size"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/tv_approve_warden"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:textSize="@dimen/approve_deny_text_size" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@drawable/separator_background" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="@dimen/sixteen"
-                    android:weightSum="3">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="2"
-                        android:text="Warden Remark"
-                        android:textSize="@dimen/approve_deny_text_size"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/tv_approve_warden_remark"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:textSize="@dimen/approve_deny_text_size" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@drawable/separator_background" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="@dimen/sixteen"
-                    android:weightSum="3">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="2"
                         android:text="HOD"
                         android:textSize="@dimen/approve_deny_text_size"
                         android:textStyle="bold" />

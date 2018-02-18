@@ -5,18 +5,12 @@
 package net.requests;
 
 import android.content.Context;
-import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.widget.Toast;
 
 import net.ApiClient;
 import net.ApiInterface;
-import net.models.GuardLogModel;
-import net.models.LogReturnModel;
+import models.GuardLogModel;
 
-import constants.OutPassAttributes;
-import constants.OutPassType;
-import in.ac.iilm.iilm.R;
 import retrofit2.Call;
 import retrofit2.Response;
 import utils.UserInformation;

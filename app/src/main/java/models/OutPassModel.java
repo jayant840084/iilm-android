@@ -2,7 +2,7 @@
  * Copyright 2018,  Jayant Singh, All rights reserved.
  */
 
-package net.models;
+package models;
 
 import com.google.gson.annotations.SerializedName;
 

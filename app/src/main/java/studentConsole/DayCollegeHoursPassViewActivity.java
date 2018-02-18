@@ -8,13 +8,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
 
-import com.google.gson.GsonBuilder;
-
-import net.models.OutPassModel;
 
 import constants.OutPassAttributes;
 import constants.OutPassSource;
 import in.ac.iilm.iilm.R;
+import models.OutPassModel;
 import pojo.GuardLogPojo;
 import utils.PassHelper;
 import utils.QrHelper;
@@ -30,20 +28,16 @@ public class DayCollegeHoursPassViewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_day_college_hours_pass_view);
 
         Bundle extras = getIntent().getExtras();
-
         PassHelper passHelper = new PassHelper(this);
-
         outPass = passHelper.getOutPassFromDb(extras.getInt(OutPassSource.LABEL),
                 extras.getString(OutPassAttributes.ID));
 
         getSupportActionBar().setTitle(outPass.getOutPassType());
 
         // only generate the qr code if the out pass has been confirmed
-        if (outPass.getWardenSigned() != null &&
-                outPass.getHodSigned() != null &&
+        if (outPass.getHodSigned() != null &&
                 extras.getBoolean(OutPassSource.SHOW_QR))
-            if (outPass.getWardenSigned() &&
-                    outPass.getHodSigned()) {
+            if (outPass.getHodSigned()) {
                 GuardLogPojo guardLogPojo = new GuardLogPojo();
                 guardLogPojo.setId(outPass.getId());
                 guardLogPojo.setName(outPass.getName());
@@ -80,12 +74,6 @@ public class DayCollegeHoursPassViewActivity extends AppCompatActivity {
 
         ((TextView) findViewById(R.id.tv_approve_student_remark))
                 .setText(outPass.getStudentRemark());
-
-        ((TextView) findViewById(R.id.tv_approve_warden_remark))
-                .setText(outPass.getWardenRemark());
-
-        passHelper.setStatus(outPass.getWardenSigned(),
-                findViewById(R.id.tv_approve_warden));
 
         ((TextView) findViewById(R.id.tv_approve_hod_remark))
                 .setText(outPass.getHodRemark());

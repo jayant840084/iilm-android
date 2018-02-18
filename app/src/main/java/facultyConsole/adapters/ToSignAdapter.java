@@ -14,22 +14,21 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import net.models.OutPassModel;
+import db.FacultyToSignPasses;
+import io.realm.RealmResults;
+import io.realm.Sort;
+import models.OutPassModel;
 
 import java.util.List;
 
 import constants.OutPassAttributes;
 import constants.OutPassSource;
 import constants.OutPassType;
-import constants.UserAttributes;
 import constants.UserRoles;
 import facultyConsole.DayPassResponseActivity;
 import facultyConsole.DayWorkingPassResponseActivity;
 import facultyConsole.NightPassResponseActivity;
 import in.ac.iilm.iilm.R;
-import studentConsole.DayCollegeHoursPassViewActivity;
-import studentConsole.DayPassViewActivity;
-import studentConsole.NightPassViewActivity;
 import utils.ToDateTime;
 import utils.UserInformation;
 
@@ -42,11 +41,12 @@ import utils.UserInformation;
 public class ToSignAdapter extends RecyclerView.Adapter<ToSignAdapter.ViewHolder> {
 
     private Context context;
-    private List<OutPassModel> mData;
+    private RealmResults<FacultyToSignPasses> mData;
 
-    public ToSignAdapter(Context context, List<OutPassModel> data) {
+    public ToSignAdapter(Context context, RealmResults<FacultyToSignPasses> data) {
         this.context = context;
-        this.mData = data;
+        this.mData = data.sort(OutPassAttributes.HOD_SIGNED, Sort.DESCENDING,
+                OutPassAttributes.WARDEN_SIGNED, Sort.DESCENDING);
     }
 
     @Override
@@ -76,19 +76,13 @@ public class ToSignAdapter extends RecyclerView.Adapter<ToSignAdapter.ViewHolder
         return mData.size();
     }
 
-    public void updateDataSet(List<OutPassModel> outPasses) {
-        mData.clear();
-        mData.addAll(outPasses);
-        this.notifyDataSetChanged();
-    }
-
     class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView name;
         TextView date;
         TextView time;
         TextView year;
-        OutPassModel outPass;
+        FacultyToSignPasses outPass;
 
         ViewHolder(final View itemView) {
             super(itemView);
@@ -123,13 +117,15 @@ public class ToSignAdapter extends RecyclerView.Adapter<ToSignAdapter.ViewHolder
         public void setBackgroundForPass() {
             switch (UserInformation.getString(context, UserInformation.StringKey.SCOPE)) {
                 case UserRoles.DIRECTOR:
-                    if (outPass.getWardenSigned() == null ||
-                            outPass.getHodSigned() == null) {
-                        itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.bgColor));
-                    } else if (!outPass.getWardenSigned() ||
-                            !outPass.getHodSigned()) {
+                    try {
+                        if (!(outPass.getWardenSigned() &&
+                                outPass.getHodSigned())) {
+                            itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.bgColor));
+                        }
+                    } catch (NullPointerException e) {
                         itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.bgColor));
                     }
+                    break;
             }
         }
     }
