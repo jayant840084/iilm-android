@@ -126,7 +126,7 @@ public class ToSignFragment extends Fragment {
                         if (offset == 0) {
                             realm.where(FacultyToSignPasses.class).findAll().deleteAllFromRealm();
                         }
-                        realm.copyToRealm(response.body());
+                        realm.copyToRealmOrUpdate(response.body());
                         finishCall();
                     });
                 }

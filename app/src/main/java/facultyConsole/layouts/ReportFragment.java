@@ -199,7 +199,7 @@ public class ReportFragment extends Fragment {
                                 if (offset == 0) {
                                     realm.where(ReportLeavingToday.class).findAll().deleteAllFromRealm();
                                 }
-                                realm.copyToRealm(response.body());
+                                realm.copyToRealmOrUpdate(response.body());
                                 finishCall();
                             });
                         }
@@ -230,7 +230,7 @@ public class ReportFragment extends Fragment {
                                 if (offset == 0) {
                                     realm.where(ReportYetToReturn.class).findAll().deleteAllFromRealm();
                                 }
-                                realm.copyToRealm(response.body());
+                                realm.copyToRealmOrUpdate(response.body());
                                 finishCall();
                             });
                         }
@@ -261,7 +261,7 @@ public class ReportFragment extends Fragment {
                                 if (offset == 0) {
                                     realm.where(ReportReturnedToday.class).findAll().deleteAllFromRealm();
                                 }
-                                realm.copyToRealm(response.body());
+                                realm.copyToRealmOrUpdate(response.body());
                                 finishCall();
                             });
                         }
@@ -292,7 +292,7 @@ public class ReportFragment extends Fragment {
                                 if (offset == 0) {
                                     realm.where(ReportLeftToday.class).findAll().deleteAllFromRealm();
                                 }
-                                realm.copyToRealm(response.body());
+                                realm.copyToRealmOrUpdate(response.body());
                                 finishCall();
                             });
                         }

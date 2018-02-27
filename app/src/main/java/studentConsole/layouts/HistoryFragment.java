@@ -115,7 +115,7 @@ public class HistoryFragment extends Fragment {
                         if (offset == 0) {
                             realm.where(StudentHistory.class).findAll().deleteAllFromRealm();
                         }
-                        realm.copyToRealm(response.body());
+                        realm.copyToRealmOrUpdate(response.body());
                         finishCall();
                     });
                 }
