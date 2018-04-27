@@ -108,10 +108,9 @@ public class HistoryFragment extends Fragment {
                                 finishCall();
                             });
                         } else {
-                            if (getActivity() != null) {
+                            finishCall();
+                            if (getActivity() != null)
                                 Toast.makeText(getContext(), "Failed to update", Toast.LENGTH_SHORT).show();
-                                finishCall();
-                            }
                         }
                     }
             );
@@ -138,7 +137,9 @@ public class HistoryFragment extends Fragment {
 
     @Override
     public void onDestroy() {
-        request.cancel();
+        if (!lastCallFinished) {
+            request.cancel();
+        }
         super.onDestroy();
     }
 

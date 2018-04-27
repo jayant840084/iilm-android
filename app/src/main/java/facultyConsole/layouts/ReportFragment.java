@@ -310,9 +310,7 @@ public class ReportFragment extends Fragment {
     private void finishCall() {
         Activity activity = getActivity();
         if (activity != null) {
-            activity.runOnUiThread(() -> {
-                refreshLayout.setRefreshing(false);
-            });
+            activity.runOnUiThread(() -> refreshLayout.setRefreshing(false));
         }
     }
 

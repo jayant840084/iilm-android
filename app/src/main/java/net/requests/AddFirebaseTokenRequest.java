@@ -5,6 +5,7 @@
 package net.requests;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 
@@ -32,16 +33,14 @@ public class AddFirebaseTokenRequest {
 
         call.enqueue(new retrofit2.Callback<ResponseBody>() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                 if (response.code() == 201) {
                     UserInformation.putString(context, UserInformation.StringKey.FIREBASE_TOKEN, firebaseToken);
                 }
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-
-            }
+            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) { }
         });
     }
 
@@ -54,7 +53,7 @@ public class AddFirebaseTokenRequest {
 
         call.enqueue(new retrofit2.Callback<ResponseBody>() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                 if (response.code() == 203) {
                     UserInformation.putString(context, UserInformation.StringKey.FIREBASE_TOKEN, firebaseToken);
                     callback.status(true);
@@ -64,7 +63,7 @@ public class AddFirebaseTokenRequest {
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
                 callback.status(false);
             }
         });

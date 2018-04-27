@@ -24,7 +24,7 @@ import utils.UserInformation;
 
 public class YetToReturnReportRequest {
 
-    private Call<List<ReportYetToReturn>> call;
+    private Call<List<ReportYetToReturn>> call = null;
 
     public void execute(
             final Context context,
@@ -53,7 +53,9 @@ public class YetToReturnReportRequest {
     }
 
     public void cancel() {
-        call.cancel();
+        if (call != null) {
+            call.cancel();
+        }
     }
 
     public interface Callback {

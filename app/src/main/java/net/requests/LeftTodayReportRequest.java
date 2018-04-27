@@ -24,7 +24,7 @@ import utils.UserInformation;
 
 public class LeftTodayReportRequest {
 
-    private Call<List<ReportLeftToday>> call;
+    private Call<List<ReportLeftToday>> call = null;
 
     public void execute(
             final Context context,
@@ -53,7 +53,9 @@ public class LeftTodayReportRequest {
     }
 
     public void cancel() {
-        call.cancel();
+        if (call != null) {
+            call.cancel();
+        }
     }
 
     public interface Callback {

@@ -26,7 +26,7 @@ import utils.UserInformation;
 
 public class GetSignedPassesRequest {
 
-    private Call<List<FacultySignedPasses>> call;
+    private Call<List<FacultySignedPasses>> call = null;
 
     public void execute(
             final Context context,
@@ -58,7 +58,9 @@ public class GetSignedPassesRequest {
     }
 
     public void cancel() {
-        call.cancel();
+        if (call != null) {
+            call.cancel();
+        }
     }
 
     public interface Callback {

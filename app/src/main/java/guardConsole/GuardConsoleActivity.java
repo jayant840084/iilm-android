@@ -160,14 +160,14 @@ public class GuardConsoleActivity extends AppCompatActivity {
         GuardPassHelper.setGuardLogModel(guardLogModel);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.guard_pass_info_container, new GuardAllowFragment())
-                .commit();
+                .commitAllowingStateLoss();
     }
 
     private void deny(String message) {
         GuardPassHelper.setMessage(message);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.guard_pass_info_container, new GuardDenyFragment())
-                .commit();
+                .commitAllowingStateLoss();
     }
 
     private void requestFailed() {
@@ -175,7 +175,7 @@ public class GuardConsoleActivity extends AppCompatActivity {
             getSupportFragmentManager()
                     .beginTransaction()
                     .remove(getSupportFragmentManager().getFragments().get(0))
-                    .commit();
+                    .commitAllowingStateLoss();
         }
         mRequestFailed.setVisibility(View.VISIBLE);
     }

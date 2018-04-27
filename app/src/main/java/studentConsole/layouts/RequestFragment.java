@@ -4,6 +4,7 @@
 
 package studentConsole.layouts;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
@@ -37,10 +38,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import utils.ProgressBarUtil;
 import utils.UserInformation;
-
-/**
- * prevent dates of past from being selected.
- */
 
 public class RequestFragment extends Fragment implements AdapterView.OnItemSelectedListener {
 
@@ -342,17 +339,27 @@ public class RequestFragment extends Fragment implements AdapterView.OnItemSelec
     }
 
     private void outPassRequestSuccessful() {
-        mProgressBar.hideProgress();
-        Toast.makeText(getContext(), "Request Successful", Toast.LENGTH_SHORT).show();
-        getFragmentManager()
-                .beginTransaction()
-                .replace(R.id.fragmentContent, new RequestFragment())
-                .commit();
+        Activity activity = getActivity();
+        if (activity != null) {
+            activity.runOnUiThread(() -> {
+                mProgressBar.hideProgress();
+                Toast.makeText(getContext(), "Request Successful", Toast.LENGTH_SHORT).show();
+                getFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragmentContent, new RequestFragment())
+                        .commit();
+            });
+        }
     }
 
     private void outPassRequestFailed() {
-        mProgressBar.hideProgress();
-        Toast.makeText(getContext(), "Request Failed", Toast.LENGTH_SHORT).show();
+        Activity activity = getActivity();
+        if (activity != null) {
+            activity.runOnUiThread(() -> {
+                mProgressBar.hideProgress();
+                Toast.makeText(getContext(), "Request Failed", Toast.LENGTH_SHORT).show();
+            });
+        }
     }
 
     @Override
