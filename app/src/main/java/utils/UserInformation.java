@@ -5,11 +5,25 @@
 package utils;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
+
+import net.ApiClient;
+import net.ApiInterface;
+import net.requests.LogoutRequest;
 
 import java.util.Calendar;
+
+import in.ac.iilm.iilm.SplashActivity;
+import models.LoginModel;
+import models.UserModel;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by sherlock on 5/7/17.
@@ -73,11 +87,63 @@ public class UserInformation {
     }
 
     public enum LongKey {
-        TOKEN_EXPIRATION
+        TOKEN_EXPIRATION,
+        LAST_PASS_REQUEST_TIME
     }
 
     public enum BooleanKey {
         LOGOUT_FLAG,
         IS_LOGGED_IN
+    }
+
+    public static void getFromServer(Context context, Callback callback) {
+        getFromServer(context, getString(context, StringKey.TOKEN), callback);
+    }
+
+    public static void getFromServer(Context context, String token, Callback callback) {
+        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
+
+        Call<UserModel> call = apiInterface.getUser(token);
+
+        call.enqueue(new retrofit2.Callback<UserModel>() {
+            @Override
+            public void onResponse(@NonNull Call<UserModel> call, @NonNull Response<UserModel> response) {
+                if (response.code() == 200) {
+                    saveUserInfo(context, token, response.body());
+                    callback.response(true);
+                } else {
+                    new LogoutRequest().execute(context, success -> {
+                        context.startActivity(new Intent(context, SplashActivity.class));
+                        ((Activity) context).finish();
+                    });
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<UserModel> call, @NonNull Throwable t) {
+                callback.response(false);
+            }
+        });
+    }
+
+    private static void saveUserInfo(Context context, String token, UserModel response) {
+        SharedPreferences.Editor editor = UserInformation.getPreferences(context).edit();
+
+        editor.putString(StringKey.UID.name(), response.getUid());
+        editor.putString(StringKey.NAME.name(), response.getName());
+        editor.putString(StringKey.BRANCH.name(), response.getBranch());
+        editor.putString(StringKey.GENDER.name(), response.getGender());
+        editor.putString(StringKey.PHONE_NUMBER.name(), response.getPhoneNumber());
+        editor.putString(StringKey.YEAR.name(), response.getYear());
+        editor.putString(StringKey.ROOM_NUMBER.name(), response.getRoomNumber());
+        editor.putString(StringKey.SCOPE.name(), response.getScope());
+        editor.putString(StringKey.EMAIL.name(), response.getEmail());
+        editor.putString(StringKey.TOKEN.name(), token);
+
+        editor.commit();
+    }
+
+    public interface Callback {
+        void response(boolean success);
     }
 }

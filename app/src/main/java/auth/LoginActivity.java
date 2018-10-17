@@ -7,6 +7,7 @@ package auth;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -75,11 +76,6 @@ public class LoginActivity extends AppCompatActivity {
                 .visitDeveloperSite(findViewById(R.id.bt_login_dev_site));
     }
 
-    /**
-     * Attempts to sign in or register the account specified by the login form.
-     * If there are form errors (invalid email, missing fields, etc.), the
-     * errors are presented and no actual login attempt is made.
-     */
     private void attemptLogin() {
 
         // Store values at the time of the login attempt.
@@ -121,16 +117,22 @@ public class LoginActivity extends AppCompatActivity {
             Call<LoginModel> call = apiInterface.getLogin(uid, password);
             call.enqueue(new Callback<LoginModel>() {
                 @Override
-                public void onResponse(Call<LoginModel> call, Response<LoginModel> response) {
+                public void onResponse(@NonNull Call<LoginModel> call, @NonNull Response<LoginModel> response) {
                     if (response.code() == 200) {
-                        getUserInfo(response.body().getToken());
+                        UserInformation.getFromServer(LoginActivity.this, response.body().getToken(), success -> {
+                            if (success) {
+                                onRetrievingUserInfo();
+                            } else {
+                                loginFailed();
+                            }
+                        });
                     } else {
                         invalidPassword();
                     }
                 }
 
                 @Override
-                public void onFailure(Call<LoginModel> call, Throwable t) {
+                public void onFailure(@NonNull Call<LoginModel> call, @NonNull Throwable t) {
                     loginFailed();
                 }
             });
@@ -147,40 +149,10 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private boolean isPasswordValid(String password) {
-        return password.length() > 4 && password.length() <= 200;
+        return password.length() > 1 && password.length() <= 200;
     }
 
-    private void getUserInfo(final String token) {
-        ApiInterface apiInterface = ApiClient.getClient().create(ApiInterface.class);
-
-        Call<UserModel> call = apiInterface.getUser(token);
-
-        call.enqueue(new Callback<UserModel>() {
-            @Override
-            public void onResponse(Call<UserModel> call, Response<UserModel> response) {
-                onRetrievingUserInfo(token, response);
-            }
-
-            @Override
-            public void onFailure(Call<UserModel> call, Throwable t) {
-                loginFailed();
-            }
-        });
-
-    }
-
-    private void onRetrievingUserInfo(String token, Response<UserModel> response) {
-        UserInformation.putString(LoginActivity.this, UserInformation.StringKey.UID, response.body().getUid());
-        UserInformation.putString(LoginActivity.this, UserInformation.StringKey.NAME, response.body().getName());
-        UserInformation.putString(LoginActivity.this, UserInformation.StringKey.BRANCH, response.body().getBranch());
-        UserInformation.putString(LoginActivity.this, UserInformation.StringKey.GENDER, response.body().getGender());
-        UserInformation.putString(LoginActivity.this, UserInformation.StringKey.PHONE_NUMBER, response.body().getPhoneNumber());
-        UserInformation.putString(LoginActivity.this, UserInformation.StringKey.YEAR, response.body().getYear());
-        UserInformation.putString(LoginActivity.this, UserInformation.StringKey.ROOM_NUMBER, response.body().getRoomNumber());
-        UserInformation.putString(LoginActivity.this, UserInformation.StringKey.SCOPE, response.body().getScope());
-        UserInformation.putString(LoginActivity.this, UserInformation.StringKey.EMAIL, response.body().getEmail());
-        UserInformation.putString(LoginActivity.this, UserInformation.StringKey.TOKEN, token);
-
+    private void onRetrievingUserInfo() {
         // add firebase token to server if available
         if (FirebaseInstanceId.getInstance().getToken() != null) {
             new AddFirebaseTokenRequest().execute(this, success -> {

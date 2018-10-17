@@ -119,21 +119,26 @@ public class SplashActivity extends AppCompatActivity {
         }
     }
 
+    // user reaches here only if everything checks out and the application should continue to dash with login
     private void showUserConsole() {
-        switch (UserInformation.getString(this, UserInformation.StringKey.SCOPE)) {
-            case "student":
-                startActivity(new Intent(this, StudentConsoleActivity.class));
-                break;
-            case "hod":
-            case "director":
-            case "warden":
-                startActivity(new Intent(this, FacultyConsoleActivity.class));
-                break;
-            case "guard":
-                startActivity(new Intent(this, GuardConsoleActivity.class));
-                break;
-        }
-        finish();
+        // refresh the user info
+        UserInformation.getFromServer(this, success -> {
+            // choose the appropriate dash for the user
+            switch (UserInformation.getString(SplashActivity.this, UserInformation.StringKey.SCOPE)) {
+                case "student":
+                    startActivity(new Intent(SplashActivity.this, StudentConsoleActivity.class));
+                    break;
+                case "hod":
+                case "director":
+                case "warden":
+                    startActivity(new Intent(SplashActivity.this, FacultyConsoleActivity.class));
+                    break;
+                case "guard":
+                    startActivity(new Intent(SplashActivity.this, GuardConsoleActivity.class));
+                    break;
+            }
+            finish();
+        });
     }
 
     private void showLogin() {

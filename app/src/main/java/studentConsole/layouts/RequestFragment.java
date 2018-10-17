@@ -7,6 +7,7 @@ package studentConsole.layouts;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -235,21 +236,33 @@ public class RequestFragment extends Fragment implements AdapterView.OnItemSelec
                         etStudentRemark.getText().toString()
                 );
 
-                call.enqueue(new Callback<ResponseBody>() {
-                    @Override
-                    public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                        if (response.code() == 201) {
-                            outPassRequestSuccessful();
-                        } else {
+                long lastPassRequestTime = UserInformation.getLong(getContext(), UserInformation.LongKey.LAST_PASS_REQUEST_TIME);
+                long currentTime = new Date().getTime();
+
+                boolean isNewRequestAllowed = currentTime - lastPassRequestTime >= 600000;
+
+                if (isNewRequestAllowed) {
+                    call.enqueue(new Callback<ResponseBody>() {
+                        @Override
+                        public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+                            if (response.code() == 201) {
+                                UserInformation.putLong(getContext(), UserInformation.LongKey.LAST_PASS_REQUEST_TIME, new Date().getTime());
+                                outPassRequestSuccessful();
+                            } else {
+                                outPassRequestFailed();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
                             outPassRequestFailed();
                         }
-                    }
+                    });
+                } else {
+                    mProgressBar.hideProgress();
+                    Toast.makeText(getContext(), "You can request only one gate pass every ten minutes.", Toast.LENGTH_SHORT).show();
+                }
 
-                    @Override
-                    public void onFailure(Call<ResponseBody> call, Throwable t) {
-                        outPassRequestFailed();
-                    }
-                });
             }
         });
 
@@ -343,7 +356,9 @@ public class RequestFragment extends Fragment implements AdapterView.OnItemSelec
         if (activity != null) {
             activity.runOnUiThread(() -> {
                 mProgressBar.hideProgress();
-                Toast.makeText(getContext(), "Request Successful", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(),
+                        "Request Successful. You will be able to make your next request after ten minutes.",
+                        Toast.LENGTH_SHORT).show();
                 getFragmentManager()
                         .beginTransaction()
                         .replace(R.id.fragmentContent, new RequestFragment())
